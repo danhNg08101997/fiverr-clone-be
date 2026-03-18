@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { ErrorHandlingMiddleware } from './common/filters/middleware/error-handling.middleware';
 import { PinoLogger } from './utils/logger/pino.logger';
 import { AuthModule } from './modules/auth/auth.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [PrismaModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,
