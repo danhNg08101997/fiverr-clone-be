@@ -1,5 +1,5 @@
 datasource db {
-  provider = "mysql" // Chọn PostgreSQL, MySQL, hoặc SQLite
+  provider = "mysql"
 }
 
 generator client {
@@ -11,30 +11,31 @@ model NguoiDung {
   id            Int      @id @default(autoincrement())
   name          String
   email         String   @unique
-  pass_word     String
+  password      String
   phone         String?
-  birth_day     DateTime?
+  birthday      String?
   gender        Boolean?
   role          String   @default("USER")
-  skill         String?
-  certification String?
-  thueCongViec  ThueCongViec[]
-  binhLuans     BinhLuan[]
+  skill         Json? //lưu theo kiểu String[] nhưng MySQL ko support như Postgres => Json là kiểu thay thế
+  certification Json?
   refresh_token String?
+
+  thueCongViec ThueCongViec[]
+  binhLuans    BinhLuan[]
 }
 
 model ThueCongViec {
-  id           Int      @id @default(autoincrement())
-  ma_cong_viec Int
+  id            Int       @id @default(autoincrement())
+  ma_cong_viec  Int
   ma_nguoi_thue Int
-  ngay_thue    DateTime
-  hoan_thanh   Boolean
-  NguoiDung    NguoiDung @relation(fields: [ma_nguoi_thue], references: [id])
-  CongViec     CongViec  @relation(fields: [ma_cong_viec], references: [id])
+  ngay_thue     DateTime
+  hoan_thanh    Boolean
+  NguoiDung     NguoiDung @relation(fields: [ma_nguoi_thue], references: [id])
+  CongViec      CongViec  @relation(fields: [ma_cong_viec], references: [id])
 }
 
 model CongViec {
-  id                  Int                    @id @default(autoincrement())
+  id                  Int                 @id @default(autoincrement())
   ten_cong_viec       String
   danh_gia            Int
   gia_tien            Int
@@ -43,33 +44,33 @@ model CongViec {
   mo_ta_ngan          String
   sao_cong_viec       Int
   ma_chi_tiet_loai    Int
-  ChiTietLoaiCongViec ChiTietLoaiCongViec   @relation(fields: [ma_chi_tiet_loai], references: [id])
+  ChiTietLoaiCongViec ChiTietLoaiCongViec @relation(fields: [ma_chi_tiet_loai], references: [id])
   ThueCongViecs       ThueCongViec[]
-  BinhLuans           BinhLuan[]             // Quan hệ ngược với BinhLuan
+  BinhLuans           BinhLuan[] // Quan hệ ngược với BinhLuan
 }
 
 model ChiTietLoaiCongViec {
-  id                  Int              @id @default(autoincrement())
-  ten_chi_tiet        String
-  hinh_anh            String
-  ma_loai_cong_viec   Int
-  LoaiCongViec        LoaiCongViec     @relation(fields: [ma_loai_cong_viec], references: [id])
-  CongViecs           CongViec[]       // Quan hệ ngược với CongViec
+  id                Int          @id @default(autoincrement())
+  ten_chi_tiet      String
+  hinh_anh          String
+  ma_loai_cong_viec Int
+  LoaiCongViec      LoaiCongViec @relation(fields: [ma_loai_cong_viec], references: [id])
+  CongViecs         CongViec[] // Quan hệ ngược với CongViec
 }
 
 model LoaiCongViec {
-  id            Int      @id @default(autoincrement())
-  ten_loai_cong_viec String
+  id                  Int                   @id @default(autoincrement())
+  ten_loai_cong_viec  String
   ChiTietLoaiCongViec ChiTietLoaiCongViec[]
 }
 
 model BinhLuan {
-  id            Int      @id @default(autoincrement())
-  ma_cong_viec  Int
+  id                 Int       @id @default(autoincrement())
+  ma_cong_viec       Int
   ma_nguoi_binh_luan Int
-  ngay_binh_luan DateTime
-  noi_dung      String
-  sao_binh_luan Int
-  CongViec      CongViec @relation(fields: [ma_cong_viec], references: [id])
-  NguoiDung     NguoiDung @relation(fields: [ma_nguoi_binh_luan], references: [id])
+  ngay_binh_luan     DateTime
+  noi_dung           String
+  sao_binh_luan      Int
+  CongViec           CongViec  @relation(fields: [ma_cong_viec], references: [id])
+  NguoiDung          NguoiDung @relation(fields: [ma_nguoi_binh_luan], references: [id])
 }

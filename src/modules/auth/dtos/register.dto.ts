@@ -33,10 +33,8 @@ export class RegisterDto {
   gender?: boolean;
 
   @IsOptional()
-  @IsString()
-  skill?: string;
+  skill?: string[];
 
   @IsOptional()
-  @IsString()
-  certification?: string;
+  certification?: string[];
 }

@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy'; // Passport Local Strategy
+import { LocalStrategy } from './strategy/local.strategy'; // Passport Local Strategy
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { PrismaModule } from '../../../prisma/prisma.module'; // JWT Strategy
 
 @Module({

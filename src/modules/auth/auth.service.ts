@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
-import { RegisterDto } from '../../common/dtos/register.dto';
+import { RegisterDto } from './dtos/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.pass_word);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
@@ -53,6 +53,7 @@ export class AuthService {
       role: user.role,
     };
     return {
+      statusCode: 200,
       message: 'Đăng nhập thành công',
       ...tokens,
       accessToken: await this.jwtService.signAsync(payload),
@@ -66,7 +67,6 @@ export class AuthService {
       email,
       password,
       phone,
-      role,
       birthday,
       gender,
       skill,
@@ -84,13 +84,13 @@ export class AuthService {
       data: {
         name,
         email,
-        pass_word: hashedPassword,
-        phone: phone ?? '',
+        password: hashedPassword,
+        phone,
         role: 'USER',
-        birth_day: birthday ?? null,
-        gender: gender ?? true,
-        skill: skill ?? '',
-        certification: certification ?? '',
+        birthday,
+        gender,
+        skill,
+        certification,
       },
       select: {
         id: true,
@@ -98,7 +98,7 @@ export class AuthService {
         email: true,
         phone: true,
         role: true,
-        birth_day: true,
+        birthday: true,
         gender: true,
         skill: true,
         certification: true,
@@ -142,7 +142,7 @@ export class AuthService {
         email: true,
         name: true,
         phone: true,
-        birth_day: true,
+        birthday: true,
         gender: true,
         role: true,
         skill: true,
@@ -154,7 +154,14 @@ export class AuthService {
       throw new UnauthorizedException('Người dùng không tồn tại');
     }
 
-    return user;
+    // return user;
+    return {
+      statusCode: 201,
+      message: 'Lấy thông tin người dùng thành công',
+      data: {
+        user,
+      },
+    };
   }
 
   private async generateTokens(user: any) {

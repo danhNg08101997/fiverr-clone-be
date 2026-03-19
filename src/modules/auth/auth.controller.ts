@@ -3,15 +3,27 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from '../../guard/local-auth.guard';
 import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { RegisterDto } from '../../common/dtos/register.dto';
+import { RegisterDto } from './dtos/register.dto';
 
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('sign-up')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
+  }
+
   @UseGuards(LocalAuthGuard)
-  @Post('login')
+  @Post('sign-in')
   async login(@Req() req: Request & { user: any }) {
     return this.authService.login(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('sign-out')
+  async logout(@CurrentUser() user: { userId: number }) {
+    return this.authService.logout(user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -20,19 +32,8 @@ export class AuthController {
     return this.authService.getProfile(user.userId);
   }
 
-  @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
-  }
-
   @Post('refresh')
   async refresh(@Body() body: { userId: number; refreshToken: string }) {
     return this.authService.refreshToken(body.userId, body.refreshToken);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logout(@CurrentUser() user: { userId: number }) {
-    return this.authService.logout(user.userId);
   }
 }
