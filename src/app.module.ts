@@ -5,9 +5,10 @@ import { ErrorHandlingMiddleware } from './common/filters/middleware/error-handl
 import { PinoLogger } from './utils/logger/pino.logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { GigModule } from './modules/gig/gig.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, GigModule],
   controllers: [AppController],
   providers: [
     AppService,

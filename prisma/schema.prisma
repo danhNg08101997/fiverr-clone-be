@@ -34,7 +34,7 @@ model ThueCongViec {
   CongViec      CongViec  @relation(fields: [ma_cong_viec], references: [id])
 }
 
-model CongViec {
+model CongViec { //Gig
   id                  Int                 @id @default(autoincrement())
   ten_cong_viec       String
   danh_gia            Int

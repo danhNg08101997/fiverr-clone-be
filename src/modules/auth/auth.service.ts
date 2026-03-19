@@ -156,7 +156,7 @@ export class AuthService {
 
     // return user;
     return {
-      statusCode: 201,
+      statusCode: 200,
       message: 'Lấy thông tin người dùng thành công',
       data: {
         user,
@@ -209,7 +209,13 @@ export class AuthService {
       },
     });
 
-    return tokens;
+    return {
+      statusCode: 200,
+      message: 'Làm mới phiên đăng nhập thành công',
+      data: {
+        tokens,
+      },
+    };
   }
 
   async logout(userId: number) {
