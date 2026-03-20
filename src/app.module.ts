@@ -5,10 +5,11 @@ import { ErrorHandlingMiddleware } from './common/filters/middleware/error-handl
 import { PinoLogger } from './utils/logger/pino.logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { GigModule } from './modules/gig/gig.module';
+import { CongViecModule } from './modules/cong-viec/cong-viec.module';
+import { LoaiCongViecModule } from './modules/loai-cong-viec/loai-cong-viec.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, GigModule],
+  imports: [PrismaModule, AuthModule, CongViecModule, LoaiCongViecModule],
   controllers: [AppController],
   providers: [
     AppService,

@@ -9,7 +9,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class QueryGigDto {
+export class QueryCongViecDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()

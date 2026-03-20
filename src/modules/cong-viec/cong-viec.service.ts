@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateGigDto } from './dtos/create-gig.dto';
+import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
 
 @Injectable()
-export class GigService {
+export class CongViecService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateGigDto) {
+  async create(dto: CreateCongViecDto) {
     const chiTietLoai = await this.prisma.chiTietLoaiCongViec.findUnique({
       where: {
         id: dto.maChiTietLoai,
@@ -19,7 +19,7 @@ export class GigService {
       );
     }
 
-    const newGig = await this.prisma.congViec.create({
+    const newCongViec = await this.prisma.congViec.create({
       data: {
         ten_cong_viec: dto.tenCongViec,
         danh_gia: dto.danhGia ?? 0,
@@ -38,7 +38,7 @@ export class GigService {
     return {
       statusCode: 201,
       message: 'Tạo công việc thành công',
-      data: newGig,
+      data: newCongViec,
     };
   }
 }
