@@ -41,6 +41,10 @@ export class CreateCongViecDto {
 
   @IsString()
   @IsNotEmpty()
+  nguoiTao: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MinLength(20)
   moTa: string;
 

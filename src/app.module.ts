@@ -7,9 +7,18 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { CongViecModule } from './modules/cong-viec/cong-viec.module';
 import { LoaiCongViecModule } from './modules/loai-cong-viec/loai-cong-viec.module';
+import { NhomChiTietLoaiCongViecModule } from './modules/nhom-chi-tiet-loai-cong-viec/nhom-chi-tiet-loai-cong-viec.module';
+import { ChiTietLoaiCongViecModule } from './modules/chi-tiet-loai-cong-viec/chi-tiet-loai-cong-viec.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, CongViecModule, LoaiCongViecModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    CongViecModule,
+    LoaiCongViecModule,
+    NhomChiTietLoaiCongViecModule,
+    ChiTietLoaiCongViecModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

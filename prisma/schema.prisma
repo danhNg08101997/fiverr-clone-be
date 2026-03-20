@@ -39,29 +39,36 @@ model CongViec { //Gig
   ten_cong_viec       String
   danh_gia            Int
   gia_tien            Int
+  nguoi_tao           String
   hinh_anh            String
   mo_ta               String
   mo_ta_ngan          String
   sao_cong_viec       Int
   ma_chi_tiet_loai    Int
-  ChiTietLoaiCongViec ChiTietLoaiCongViec @relation(fields: [ma_chi_tiet_loai], references: [id])
   ThueCongViecs       ThueCongViec[]
   BinhLuans           BinhLuan[] // Quan hệ ngược với BinhLuan
 }
 
-model ChiTietLoaiCongViec {
+model NhomChiTietLoaiCongViec {
   id                Int          @id @default(autoincrement())
-  ten_chi_tiet      String
+  ten_nhom          String
   hinh_anh          String
   ma_loai_cong_viec Int
   LoaiCongViec      LoaiCongViec @relation(fields: [ma_loai_cong_viec], references: [id])
-  CongViecs         CongViec[] // Quan hệ ngược với CongViec
+  ChiTietLoaiCongViec ChiTietLoaiCongViec[]
+}
+
+model ChiTietLoaiCongViec {
+  id                Int @id @default(autoincrement())
+  ten_chi_tiet      String
+  ma_nhom_chi_tiet_loai_cong_viec Int
+  NhomChiTietLoaiCongViec NhomChiTietLoaiCongViec @relation(fields: [ma_nhom_chi_tiet_loai_cong_viec], references: [id])
 }
 
 model LoaiCongViec {
   id                  Int                   @id @default(autoincrement())
   ten_loai_cong_viec  String
-  ChiTietLoaiCongViec ChiTietLoaiCongViec[]
+  NhomChiTietLoaiCongViec NhomChiTietLoaiCongViec[]
 }
 
 model BinhLuan {
