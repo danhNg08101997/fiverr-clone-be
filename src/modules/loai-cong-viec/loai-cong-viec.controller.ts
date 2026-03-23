@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { LoaiCongViecService } from './loai-cong-viec.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
 import { QueryLoaiCongViecDto } from './dtos/query-loai-cong-viec.dto';
@@ -23,5 +23,11 @@ export class LoaiCongViecController {
   @Get('phan-trang-tim-kiem')
   findAllPaginationAndSearch(@Query() query: QueryLoaiCongViecDto) {
     return this.loaiCongViecService.findAllPaginationAndSearch(query);
+  }
+
+  // GET "/api/loai-cong-viec/{id}
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.loaiCongViecService.findOne(id);
   }
 }

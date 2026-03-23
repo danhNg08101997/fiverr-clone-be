@@ -87,4 +87,22 @@ export class LoaiCongViecService {
       },
     };
   }
+
+  async findOne(id: string) {
+    if (Number(id) < 1) {
+      throw new BadRequestException(
+        'id phải lớn hơn 1',
+        HttpStatus.BAD_REQUEST.toString(),
+      );
+    }
+
+    const loaiCongViecTheoId = await this.prisma.loaiCongViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    return {
+      statusCode: 200,
+      content: loaiCongViecTheoId,
+    };
+  }
 }
