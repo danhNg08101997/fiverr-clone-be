@@ -27,15 +27,24 @@ export class NhomChiTietLoaiCongViecService {
           hinh_anh: dto.hinhAnh,
           ma_loai_cong_viec: dto.maLoaiCongViec,
         },
-        include: {
-          ChiTietLoaiCongViec: true,
-        },
       });
 
     return {
       statusCode: 201,
       message: 'Tạo nhóm chi tiết loại công việc thành công',
       data: newNhomChiTietLoaiCongViec,
+    };
+  }
+
+  async findAll() {
+    const nhomChiTietLoaiCongViecAll =
+      await this.prisma.nhomChiTietLoaiCongViec.findMany({
+        include: { ChiTietLoaiCongViec: true },
+      });
+
+    return {
+      statusCode: 200,
+      content: nhomChiTietLoaiCongViecAll,
     };
   }
 }
