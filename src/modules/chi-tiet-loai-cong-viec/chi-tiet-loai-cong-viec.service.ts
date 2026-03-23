@@ -24,7 +24,7 @@ export class ChiTietLoaiCongViecService {
       {
         data: {
           ten_chi_tiet: dto.tenChiTiet,
-          ma_nhom_chi_tiet_loai_cong_viec: dto.maNhomChiTietLoaiCongViec,
+          ma_nhom_chi_tiet_loai_cong_viec: dto.maNhomChiTietLoaiCongViec || 1,
         },
       },
     );
