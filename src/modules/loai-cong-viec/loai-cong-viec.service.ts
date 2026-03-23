@@ -1,7 +1,13 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
 import { QueryLoaiCongViecDto } from './dtos/query-loai-cong-viec.dto';
+import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
 
 @Injectable()
 export class LoaiCongViecService {
@@ -103,6 +109,41 @@ export class LoaiCongViecService {
     return {
       statusCode: 200,
       content: loaiCongViecTheoId,
+    };
+  }
+
+  async update(id: string, data: UpdateLoaiCongViecDto) {
+    const isExist = await this.prisma.loaiCongViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!isExist) {
+      throw new NotFoundException(
+        `Không tìm thấy loại công việc với id = ${id}`,
+      );
+    }
+
+    const updateData: Record<string, any> = {};
+
+    if (data.tenLoaiCongViec !== undefined) {
+      updateData.ten_loai_cong_viec = data.tenLoaiCongViec;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      throw new BadRequestException('Không có dữ liệu hợp lệ để cập nhật');
+    }
+
+    const loaiCongViecUpdated = await this.prisma.loaiCongViec.update({
+      where: {
+        id: Number(id),
+      },
+      data: updateData,
+    });
+
+    return {
+      statusCode: 200,
+      message: 'Cập nhật loại công việc thành công',
+      content: loaiCongViecUpdated,
     };
   }
 }
