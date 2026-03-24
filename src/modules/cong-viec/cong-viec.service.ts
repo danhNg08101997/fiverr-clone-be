@@ -29,7 +29,7 @@ export class CongViecService {
         mo_ta_ngan: dto.moTaNgan ?? '',
         sao_cong_viec: dto.saoCongViec ?? 0,
         ma_chi_tiet_loai: dto.maChiTietLoai,
-        nguoi_tao: dto.nguoiTao,
+        nguoi_tao: dto.nguoiTao ?? '',
       },
     });
 

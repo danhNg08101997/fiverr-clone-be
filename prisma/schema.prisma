@@ -41,8 +41,8 @@ model CongViec { //Gig
   gia_tien            Int
   nguoi_tao           String
   hinh_anh            String
-  mo_ta               String
-  mo_ta_ngan          String
+  mo_ta               String @db.Text
+  mo_ta_ngan          String @db.Text
   sao_cong_viec       Int
   ma_chi_tiet_loai    Int
   ThueCongViecs       ThueCongViec[]

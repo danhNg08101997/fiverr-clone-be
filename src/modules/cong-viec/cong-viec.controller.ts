@@ -6,7 +6,8 @@ import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
 export class CongViecController {
   constructor(private readonly congViecService: CongViecService) {}
 
-  @Post('create')
+  // POST api/cong-viec
+  @Post()
   create(@Body() dto: CreateCongViecDto) {
     return this.congViecService.create(dto);
   }

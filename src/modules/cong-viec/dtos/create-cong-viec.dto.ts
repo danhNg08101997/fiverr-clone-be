@@ -17,17 +17,20 @@ export class CreateCongViecDto {
   @MinLength(5)
   tenCongViec: string;
 
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)
   @IsOptional()
-  danhGia: number; // PROD => không nên cho client tự nhập => nên để service/backend tự tính
+  danhGia?: number; // PROD => không nên cho client tự nhập => nên để service/backend tự tính
 
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
-  giaTien: number;
+  giaTien?: number;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @IsUrl(
@@ -37,28 +40,32 @@ export class CreateCongViecDto {
         'hinh_anh phải là URL hợp lệ, ví dụ https://domain.com/image.jpg',
     },
   )
-  hinhAnh: string;
+  hinhAnh?: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  nguoiTao: string;
+  nguoiTao?: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(20)
-  moTa: string;
+  moTa?: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(10)
-  moTaNgan: string;
+  moTaNgan?: string;
 
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(0)
   @Max(5)
   @IsOptional()
-  saoCongViec: number; // PROD => không nên cho client tự nhập => nên để service/backend tự tính
+  saoCongViec?: number; // PROD => không nên cho client tự nhập => nên để service/backend tự tính
 
   @Type(() => Number)
   @IsInt()
