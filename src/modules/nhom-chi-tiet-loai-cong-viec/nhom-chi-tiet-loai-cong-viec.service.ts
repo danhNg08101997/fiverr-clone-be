@@ -1,7 +1,13 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-loai-cong-viec.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
+import { UpdateNhomChiTietLoaiCongViecDto } from './dtos/update-nhom-chi-tiet-loai-cong-viec.dto';
 
 @Injectable()
 export class NhomChiTietLoaiCongViecService {
@@ -114,6 +120,42 @@ export class NhomChiTietLoaiCongViecService {
     return {
       statusCode: 200,
       content: nhomLoaiChiTietCongViecTheoId,
+    };
+  }
+
+  async update(id: string, data: UpdateNhomChiTietLoaiCongViecDto) {
+    const isExist = await this.prisma.nhomChiTietLoaiCongViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!isExist) {
+      throw new NotFoundException(
+        `Không tìm thấy nhóm chi tiết loại công việc với id = ${id}`,
+      );
+    }
+
+    const updateData: Record<string, any> = {};
+
+    if (data.tenNhom !== undefined) {
+      updateData.ten_nhom = data.tenNhom;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      throw new BadRequestException('Không có dữ liệu hợp lệ để cập nhật');
+    }
+
+    const nhomChiTietLoaiCongViecUpdated =
+      await this.prisma.nhomChiTietLoaiCongViec.update({
+        where: {
+          id: Number(id),
+        },
+        data: updateData,
+      });
+
+    return {
+      statusCode: 200,
+      message: 'Cập nhật nhóm chi tiết loại công việc thành công',
+      content: nhomChiTietLoaiCongViecUpdated,
     };
   }
 }

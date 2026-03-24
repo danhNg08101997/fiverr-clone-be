@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-loai-cong-viec.dto';
 import { NhomChiTietLoaiCongViecService } from './nhom-chi-tiet-loai-cong-viec.service';
 import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
+import { UpdateNhomChiTietLoaiCongViecDto } from './dtos/update-nhom-chi-tiet-loai-cong-viec.dto';
 
 @Controller('api/nhom-chi-tiet-loai-cong-viec')
 export class NhomChiTietLoaiCongViecController {
@@ -33,5 +34,17 @@ export class NhomChiTietLoaiCongViecController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.nhomChiTietLoaiCongViecService.findOne(id);
+  }
+
+  // PUT /api/nhom-chi-tiet-loai-cong-viec/{id}
+  @Put(':id')
+  update(
+    @Body() updateNhomLoaiChiTietCongViecDto: UpdateNhomChiTietLoaiCongViecDto,
+    @Param('id') id: string,
+  ) {
+    return this.nhomChiTietLoaiCongViecService.update(
+      id,
+      updateNhomLoaiChiTietCongViecDto,
+    );
   }
 }
