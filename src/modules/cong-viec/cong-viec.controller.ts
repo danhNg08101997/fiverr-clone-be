@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CongViecService } from './cong-viec.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
+import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
 
 @Controller('api/cong-viec')
 export class CongViecController {
@@ -12,23 +13,21 @@ export class CongViecController {
     return this.congViecService.create(dto);
   }
 
-  // @Get()
-  // findAll(@Query() query: QueryGigDto) {
-  //   return this.gigService.findAll(query);
-  // }
-  //
-  // @Get(':id')
-  // findOne(@Param() params: ParamsIdGigDto) {
-  //   return this.gigService.findOne(params.id);
-  // }
-  //
-  // @Patch(':id')
-  // update(@Param() params: ParamsIdGigDto, @Body() dto: UpdateGigDto) {
-  //   return this.gigService.update(params.id, dto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param() params: ParamsIdGigDto) {
-  //   return this.gigService.remove(params.id);
-  // }
+  // GET api/cong-viec
+  @Get()
+  findAll() {
+    return this.congViecService.findAll();
+  }
+
+  // GET api/cong-viec/{id}
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.congViecService.findOne(id);
+  }
+
+  // GET api/cong-viec/phan-trang-tim-kiem
+  @Get('phan-trang-tim-kiem')
+  findAllPaginationAndSearch(@Query() query: QueryLoaiCongViecDto) {
+    return this.congViecService.findAllPaginationAndSearch(query);
+  }
 }

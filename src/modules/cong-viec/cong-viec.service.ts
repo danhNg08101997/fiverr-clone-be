@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
+import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
 
 @Injectable()
 export class CongViecService {
@@ -37,6 +38,80 @@ export class CongViecService {
       statusCode: 201,
       message: 'Tạo công việc thành công',
       data: newCongViec,
+    };
+  }
+
+  async findAll() {
+    const congViecAll = await this.prisma.congViec.findMany();
+
+    return {
+      statusCode: 200,
+      content: congViecAll,
+    };
+  }
+
+  async findOne(id: string) {
+    if (Number(id) < 1) {
+      throw new BadRequestException(
+        'id phải lớn hơn 1',
+        HttpStatus.BAD_REQUEST.toString(),
+      );
+    }
+
+    const congViecTheoId = await this.prisma.congViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    return {
+      statusCode: 200,
+      content: congViecTheoId,
+    };
+  }
+
+  async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
+    const pageIndex = Number(query.pageIndex) || 1;
+    const pageSize = Number(query.pageSize) || 10;
+    const keyword = query.keyword?.trim() || '';
+
+    if (pageIndex < 1 && pageSize < 1) {
+      throw new BadRequestException(
+        'pageIndex và pageSize phải lớn hơn 1',
+        HttpStatus.BAD_REQUEST.toString(),
+      );
+    }
+
+    const whereCondition = keyword
+      ? {
+          ten_cong_viec: { contains: keyword },
+        }
+      : {};
+
+    const [data, totalRow] = await Promise.all([
+      this.prisma.congViec.findMany({
+        where: whereCondition,
+        skip: (pageIndex - 1) * pageSize,
+        take: pageSize,
+        orderBy: {
+          id: 'asc',
+        },
+      }),
+
+      this.prisma.congViec.count({
+        where: whereCondition,
+      }),
+    ]);
+
+    return {
+      statusCode: 200,
+      message: 'Lấy danh công việc phân trang, tìm kiếm thành công',
+      content: {
+        pageIndex,
+        pageSize,
+        keyword,
+        totalRow,
+        totalPage: Math.ceil(totalRow / pageSize),
+        data,
+      },
     };
   }
 }
