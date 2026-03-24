@@ -1,8 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ChiTietLoaiCongViecService } from './chi-tiet-loai-cong-viec.service';
 import { CreateChiTietLoaiCongViecDto } from './dtos/create-chi-tiet-loai-cong-viec.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('api/chi-tiet-loai-cong-viec')
+@ApiTags('Chi tiết loại công việc')
+@Controller('chi-tiet-loai-cong-viec')
 export class ChiTietLoaiCongViecController {
   constructor(
     private readonly chiTietLoaiCongViecService: ChiTietLoaiCongViecService,

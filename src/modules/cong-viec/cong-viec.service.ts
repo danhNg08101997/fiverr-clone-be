@@ -1,7 +1,7 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
-import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
+import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 
 @Injectable()
 export class CongViecService {

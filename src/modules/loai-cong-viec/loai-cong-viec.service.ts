@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
-import { QueryLoaiCongViecDto } from './dtos/query-loai-cong-viec.dto';
+import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
 
 @Injectable()

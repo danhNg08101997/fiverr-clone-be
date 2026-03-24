@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { LoaiCongViecService } from './loai-cong-viec.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
-import { QueryLoaiCongViecDto } from './dtos/query-loai-cong-viec.dto';
+import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('api/loai-cong-viec')
+@ApiTags('Loại công việc')
+@Controller('loai-cong-viec')
 export class LoaiCongViecController {
   constructor(private readonly loaiCongViecService: LoaiCongViecService) {}
 

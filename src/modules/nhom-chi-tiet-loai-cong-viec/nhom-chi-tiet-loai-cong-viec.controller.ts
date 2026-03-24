@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-loai-cong-viec.dto';
 import { NhomChiTietLoaiCongViecService } from './nhom-chi-tiet-loai-cong-viec.service';
-import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
+import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import { UpdateNhomChiTietLoaiCongViecDto } from './dtos/update-nhom-chi-tiet-loai-cong-viec.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('api/nhom-chi-tiet-loai-cong-viec')
+@ApiTags('Nhóm chi tiết loại công việc')
+@Controller('nhom-chi-tiet-loai-cong-viec')
 export class NhomChiTietLoaiCongViecController {
   constructor(
     private readonly nhomChiTietLoaiCongViecService: NhomChiTietLoaiCongViecService,

@@ -4,17 +4,23 @@ import { LocalAuthGuard } from '../../guard/local-auth.guard';
 import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { RegisterDto } from './dtos/register.dto';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dtos/login.dto';
 
-@Controller('api/v1/auth')
+@ApiTags('Auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiResponse({ status: 201, description: 'Tạo người dùng thành công' })
   @Post('sign-up')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 
   @UseGuards(LocalAuthGuard)
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({ status: 200, description: 'Đăng nhập thành công' })
   @Post('sign-in')
   async login(@Req() req: Request & { user: any }) {
     return this.authService.login(req.user);
