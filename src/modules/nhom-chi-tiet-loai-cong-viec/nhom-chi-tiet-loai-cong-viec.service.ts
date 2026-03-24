@@ -96,4 +96,24 @@ export class NhomChiTietLoaiCongViecService {
       },
     };
   }
+
+  async findOne(id: string) {
+    if (Number(id) < 1) {
+      throw new BadRequestException(
+        'id phải lớn hơn 1',
+        HttpStatus.BAD_REQUEST.toString(),
+      );
+    }
+
+    const nhomLoaiChiTietCongViecTheoId =
+      await this.prisma.nhomChiTietLoaiCongViec.findUnique({
+        where: { id: Number(id) },
+        include: { ChiTietLoaiCongViec: true },
+      });
+
+    return {
+      statusCode: 200,
+      content: nhomLoaiChiTietCongViecTheoId,
+    };
+  }
 }

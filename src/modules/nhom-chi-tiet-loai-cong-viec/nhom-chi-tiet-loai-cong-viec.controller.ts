@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-loai-cong-viec.dto';
 import { NhomChiTietLoaiCongViecService } from './nhom-chi-tiet-loai-cong-viec.service';
 import { QueryLoaiCongViecDto } from '../loai-cong-viec/dtos/query-loai-cong-viec.dto';
@@ -27,5 +27,11 @@ export class NhomChiTietLoaiCongViecController {
     return this.nhomChiTietLoaiCongViecService.findAllPaginationAndSearch(
       query,
     );
+  }
+
+  // GET /api/nhom-chi-tiet-loai-cong-viec/{id}
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.nhomChiTietLoaiCongViecService.findOne(id);
   }
 }

@@ -104,6 +104,7 @@ export class LoaiCongViecService {
 
     const loaiCongViecTheoId = await this.prisma.loaiCongViec.findUnique({
       where: { id: Number(id) },
+      include: { NhomChiTietLoaiCongViec: true },
     });
 
     return {
