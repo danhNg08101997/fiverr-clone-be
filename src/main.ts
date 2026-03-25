@@ -67,6 +67,8 @@ async function bootstrap() {
     .swagger-ui .response-col_links { display: none; }
     .swagger-ui .response-col_description { width: 50%; }
     .swagger-ui .opblock-control-arrow { display: none; }
+    .swagger-ui .auth-btn-wrapper { justify-content: space-between; }
+    .swagger-ui .auth-container input[type=password], .swagger-ui .auth-container input[type=text] { width: 100%; }
     `,
   });
 
