@@ -4,24 +4,27 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
-  // output = "../node_modules/@prisma/client-mysql"
 }
 
 model NguoiDung {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   name          String
-  email         String   @unique
+  email         String    @unique
   password      String
   phone         String?
   birthday      String?
   gender        Boolean?
-  role          String   @default("USER")
-  skill         Json? //lưu theo kiểu String[] nhưng MySQL ko support như Postgres => Json là kiểu thay thế
+  role          String    @default("USER")
+  skill         Json?
   certification Json?
   refresh_token String?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 
-  thueCongViec ThueCongViec[]
-  binhLuans    BinhLuan[]
+  thueCongViec  ThueCongViec[]
+  binhLuans     BinhLuan[]
+
+  @@map("NguoiDung")
 }
 
 model ThueCongViec {
@@ -29,46 +32,78 @@ model ThueCongViec {
   ma_cong_viec  Int
   ma_nguoi_thue Int
   ngay_thue     DateTime
-  hoan_thanh    Boolean
+  hoan_thanh    Boolean   @default(false)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
   NguoiDung     NguoiDung @relation(fields: [ma_nguoi_thue], references: [id])
   CongViec      CongViec  @relation(fields: [ma_cong_viec], references: [id])
+
+  @@index([ma_cong_viec])
+  @@index([ma_nguoi_thue])
+  @@map("ThueCongViec")
 }
 
-model CongViec { //Gig
+model CongViec {
   id                  Int                 @id @default(autoincrement())
   ten_cong_viec       String
-  danh_gia            Int
+  danh_gia            Int                 @default(0)
   gia_tien            Int
   nguoi_tao           String
-  hinh_anh            String
-  mo_ta               String @db.Text
-  mo_ta_ngan          String @db.Text
-  sao_cong_viec       Int
+  hinh_anh            String?
+  mo_ta               String              @db.Text
+  mo_ta_ngan          String              @db.Text
+  sao_cong_viec       Int                 @default(0)
   ma_chi_tiet_loai    Int
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+
+  ChiTietLoaiCongViec ChiTietLoaiCongViec @relation(fields: [ma_chi_tiet_loai], references: [id])
   ThueCongViecs       ThueCongViec[]
-  BinhLuans           BinhLuan[] // Quan hệ ngược với BinhLuan
+  BinhLuans           BinhLuan[]
+
+  @@index([ma_chi_tiet_loai])
+  @@map("CongViec")
 }
 
 model NhomChiTietLoaiCongViec {
-  id                Int          @id @default(autoincrement())
-  ten_nhom          String
-  hinh_anh          String
-  ma_loai_cong_viec Int
-  LoaiCongViec      LoaiCongViec @relation(fields: [ma_loai_cong_viec], references: [id])
-  ChiTietLoaiCongViec ChiTietLoaiCongViec[]
+  id                         Int                   @id @default(autoincrement())
+  ten_nhom                   String
+  hinh_anh                   String?
+  ma_loai_cong_viec          Int
+  created_at                 DateTime              @default(now())
+  updated_at                 DateTime              @updatedAt
+
+  LoaiCongViec               LoaiCongViec          @relation(fields: [ma_loai_cong_viec], references: [id])
+  ChiTietLoaiCongViecs       ChiTietLoaiCongViec[]
+
+  @@index([ma_loai_cong_viec])
+  @@map("NhomChiTietLoaiCongViec")
 }
 
 model ChiTietLoaiCongViec {
-  id                Int @id @default(autoincrement())
-  ten_chi_tiet      String
+  id                              Int                      @id @default(autoincrement())
+  ten_chi_tiet                    String
   ma_nhom_chi_tiet_loai_cong_viec Int
-  NhomChiTietLoaiCongViec NhomChiTietLoaiCongViec @relation(fields: [ma_nhom_chi_tiet_loai_cong_viec], references: [id])
+  created_at                      DateTime                 @default(now())
+  updated_at                      DateTime                 @updatedAt
+
+  NhomChiTietLoaiCongViec         NhomChiTietLoaiCongViec  @relation(fields: [ma_nhom_chi_tiet_loai_cong_viec], references: [id])
+  CongViecs                       CongViec[]
+
+  @@index([ma_nhom_chi_tiet_loai_cong_viec])
+  @@map("ChiTietLoaiCongViec")
 }
 
 model LoaiCongViec {
-  id                  Int                   @id @default(autoincrement())
-  ten_loai_cong_viec  String
-  NhomChiTietLoaiCongViec NhomChiTietLoaiCongViec[]
+  id                         Int                      @id @default(autoincrement())
+  ten_loai_cong_viec         String
+  created_at                 DateTime                 @default(now())
+  updated_at                 DateTime                 @updatedAt
+
+  NhomChiTietLoaiCongViecs   NhomChiTietLoaiCongViec[]
+
+  @@map("LoaiCongViec")
 }
 
 model BinhLuan {
@@ -76,8 +111,15 @@ model BinhLuan {
   ma_cong_viec       Int
   ma_nguoi_binh_luan Int
   ngay_binh_luan     DateTime
-  noi_dung           String
+  noi_dung           String    @db.Text
   sao_binh_luan      Int
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+
   CongViec           CongViec  @relation(fields: [ma_cong_viec], references: [id])
   NguoiDung          NguoiDung @relation(fields: [ma_nguoi_binh_luan], references: [id])
+
+  @@index([ma_cong_viec])
+  @@index([ma_nguoi_binh_luan])
+  @@map("BinhLuan")
 }

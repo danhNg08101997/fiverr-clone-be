@@ -9,9 +9,14 @@ import { CongViecModule } from './modules/cong-viec/cong-viec.module';
 import { LoaiCongViecModule } from './modules/loai-cong-viec/loai-cong-viec.module';
 import { NhomChiTietLoaiCongViecModule } from './modules/nhom-chi-tiet-loai-cong-viec/nhom-chi-tiet-loai-cong-viec.module';
 import { ChiTietLoaiCongViecModule } from './modules/chi-tiet-loai-cong-viec/chi-tiet-loai-cong-viec.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     PrismaModule,
     AuthModule,
     CongViecModule,
@@ -28,10 +33,4 @@ import { ChiTietLoaiCongViecModule } from './modules/chi-tiet-loai-cong-viec/chi
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ErrorHandlingMiddleware) // Đăng ký middleware xử lý lỗi
-      .forRoutes('*'); // Áp dụng cho tất cả các route, có thể thay đổi theo nhu cầu
-  }
-}
+export class AppModule {}

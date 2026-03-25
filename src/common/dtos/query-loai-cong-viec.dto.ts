@@ -3,17 +3,19 @@ import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryLoaiCongViecDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  pageIndex: number;
+  pageIndex?: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  pageSize: number;
+  pageSize?: number;
 
   @ApiPropertyOptional()
   @IsOptional()

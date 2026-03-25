@@ -1,28 +1,38 @@
-import { LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import pino from 'pino';
 
+@Injectable()
 export class PinoLogger implements LoggerService {
-  private readonly logger: pino.Logger;
+  private readonly logger = pino({
+    transport:
+      process.env.NODE_ENV !== 'production'
+        ? {
+            target: 'pino-pretty',
+            options: {
+              singleLine: true,
+              colorize: true,
+            },
+          }
+        : undefined,
+  });
 
-  constructor() {
-    this.logger = pino({
-      level: 'info', // Mức độ log mặc định
-    });
+  log(message: string, context?: string) {
+    this.logger.info({ context }, message);
   }
 
-  log(message: string) {
-    this.logger.info(message);
+  error(message: string, trace?: string, context?: string) {
+    this.logger.error({ context, trace }, message);
   }
 
-  error(message: string, trace: string) {
-    this.logger.error({ msg: message, trace });
+  warn(message: string, context?: string) {
+    this.logger.warn({ context }, message);
   }
 
-  warn(message: string) {
-    this.logger.warn(message);
+  debug(message: string, context?: string) {
+    this.logger.debug({ context }, message);
   }
 
-  debug(message: string) {
-    this.logger.debug(message);
+  verbose(message: string, context?: string) {
+    this.logger.trace({ context }, message);
   }
 }

@@ -9,6 +9,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
+  app.enableShutdownHooks();
+
   app.useGlobalFilters(new HttpExceptionFilter()); // Áp dụng Global Exception Filter
 
   app.useGlobalPipes(
@@ -20,14 +27,24 @@ async function bootstrap() {
         enableImplicitConversion: true,
       },
       exceptionFactory: (errors) => {
-        return new BadRequestException(errors);
+        const formattedErrors = errors.map((error) => ({
+          field: error.property,
+          errors: Object.values(error.constraints || {}),
+        }));
+
+        return new BadRequestException({
+          message: 'Dữ liệu đầu vào không hợp lệ',
+          errors: formattedErrors,
+        });
       },
     }),
   );
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Fiverr Clone API')
-    .setVersion('v1')
+    .setDescription('Backend API for Fiverr clone project')
+    .setVersion('1.0.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
@@ -37,13 +54,13 @@ async function bootstrap() {
       persistAuthorization: false,
       urls: [
         {
-          url: '/swagger/v1/swagger.json',
+          url: 'swagger/json',
           name: 'Fiverr',
         },
       ],
     },
     customSiteTitle: 'Fiverr Clone Swagger',
-    jsonDocumentUrl: 'swagger/v1/swagger.json',
+    jsonDocumentUrl: 'swagger/json',
     customCss: `
     .swagger-ui .parameters-col_description { margin-bottom: 2em; width: 50%; }
     .swagger-ui .parameters-col_description input { max-width: 500px; width: 100%; }
@@ -53,6 +70,10 @@ async function bootstrap() {
     `,
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = Number(process.env.PORT || 3000);
+  await app.listen(port);
+
+  console.log(`Application is running on: http://localhost:${port}/api`);
+  console.log(`Swagger is running on: http://localhost:${port}/swagger`);
 }
 bootstrap();

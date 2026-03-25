@@ -46,7 +46,7 @@ export class NhomChiTietLoaiCongViecService {
   async findAll() {
     const nhomChiTietLoaiCongViecAll =
       await this.prisma.nhomChiTietLoaiCongViec.findMany({
-        include: { ChiTietLoaiCongViec: true },
+        include: { ChiTietLoaiCongViecs: true },
       });
 
     return {
@@ -114,7 +114,7 @@ export class NhomChiTietLoaiCongViecService {
     const nhomLoaiChiTietCongViecTheoId =
       await this.prisma.nhomChiTietLoaiCongViec.findUnique({
         where: { id: Number(id) },
-        include: { ChiTietLoaiCongViec: true },
+        include: { ChiTietLoaiCongViecs: true },
       });
 
     return {
