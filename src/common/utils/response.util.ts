@@ -5,19 +5,19 @@ import {
 } from '../interfaces/api-response.interface';
 
 export function successResponse<T>(
-  data: T,
+  content: T,
   message = 'Success',
   statusCode = 200,
 ): ApiResponse<T> {
   return {
     statusCode,
     message,
-    data,
+    content,
   };
 }
 
 export function paginationResponse<T>(
-  data: T[],
+  content: T[],
   meta: PaginationMeta,
   message = 'Success',
   statusCode = 200,
@@ -25,7 +25,7 @@ export function paginationResponse<T>(
   return {
     statusCode,
     message,
-    data,
+    content,
     meta,
   };
 }

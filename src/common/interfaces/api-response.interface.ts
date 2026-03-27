@@ -1,7 +1,7 @@
 export interface ApiResponse<T> {
   statusCode: number;
   message: string;
-  data: T;
+  content: T;
 }
 
 export interface PaginationMeta {
@@ -14,6 +14,6 @@ export interface PaginationMeta {
 export interface PaginationResponse<T> {
   statusCode: number;
   message: string;
-  data: T[];
+  content: T[];
   meta: PaginationMeta;
 }

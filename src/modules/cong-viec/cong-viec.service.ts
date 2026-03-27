@@ -114,4 +114,59 @@ export class CongViecService {
       },
     };
   }
+
+  async getMenuLoaiCongViec() {
+    const menuLoaiCongViec = await this.prisma.loaiCongViec.findMany({
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        ten_loai_cong_viec: true,
+        NhomChiTietLoaiCongViecs: {
+          orderBy: { id: 'asc' },
+          select: {
+            id: true,
+            ten_nhom: true,
+            hinh_anh: true,
+            ChiTietLoaiCongViecs: {
+              orderBy: { id: 'asc' },
+              select: {
+                id: true,
+                ten_chi_tiet: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return menuLoaiCongViec.map(this.transformMenuLoaiCongViec.bind(this));
+  }
+
+  private transformMenuLoaiCongViec(loaiCongViec: {
+    id: number;
+    ten_loai_cong_viec: string;
+    NhomChiTietLoaiCongViecs: {
+      id: number;
+      ten_nhom: string;
+      hinh_anh: string | null;
+      ChiTietLoaiCongViecs: {
+        id: number;
+        ten_chi_tiet: string;
+      }[];
+    }[];
+  }) {
+    return {
+      id: loaiCongViec.id,
+      tenLoaiCongViec: loaiCongViec.ten_loai_cong_viec,
+      dsNhomChiTietLoai: loaiCongViec.NhomChiTietLoaiCongViecs.map((nhom) => ({
+        id: nhom.id,
+        tenNhom: nhom.ten_nhom,
+        hinhAnh: nhom.hinh_anh,
+        dsChiTietLoai: nhom.ChiTietLoaiCongViecs.map((chiTiet) => ({
+          id: chiTiet.id,
+          tenChiTiet: chiTiet.ten_chi_tiet,
+        })),
+      })),
+    };
+  }
 }

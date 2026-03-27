@@ -9,6 +9,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { successResponse } from '../../common/utils/response.util';
 
 @ApiTags('Công việc')
 @Controller('cong-viec')
@@ -40,6 +41,21 @@ export class CongViecController {
   })
   findAllPaginationAndSearch(@Query() query: QueryLoaiCongViecDto) {
     return this.congViecService.findAllPaginationAndSearch(query);
+  }
+
+  //GET api/cong-viec/lay-menu-loai-cong-viec
+  @Get('lay-menu-loai-cong-viec')
+  @ApiResponse({
+    status: 200,
+    description: 'Lấy menu loại công việc thành công',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Không tìm thấy menu loại công việc',
+  })
+  async getMenuLoaiCongViec() {
+    const content = await this.congViecService.getMenuLoaiCongViec();
+    return successResponse(content, 'Lấy menu loại công việc thành công');
   }
 
   // GET api/cong-viec/{id}
