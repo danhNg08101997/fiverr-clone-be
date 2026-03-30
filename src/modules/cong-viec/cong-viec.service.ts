@@ -260,6 +260,45 @@ export class CongViecService {
     );
   }
 
+  async getCongVietTheoTen(tenCongViec: string) {
+    const congViecTheoTen = await this.prisma.congViec.findMany({
+      where: { ten_cong_viec: { contains: tenCongViec } },
+      include: {
+        NguoiDung: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true,
+          },
+        },
+        ChiTietLoaiCongViec: {
+          select: {
+            id: true,
+            ten_chi_tiet: true,
+            NhomChiTietLoaiCongViec: {
+              select: {
+                id: true,
+                ten_nhom: true,
+                LoaiCongViec: {
+                  select: {
+                    id: true,
+                    ten_loai_cong_viec: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return successResponse(
+      congViecTheoTen.map(
+        this.transformApiCongViecTheoChiTietLoaiRes.bind(this),
+      ),
+      'Lấy công việc theo tên thành công',
+    );
+  }
+
   private transformApiCongViecRes(loaiCongViec: {
     id: number;
     ten_loai_cong_viec: string;
