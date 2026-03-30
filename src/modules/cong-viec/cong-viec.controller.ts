@@ -54,8 +54,7 @@ export class CongViecController {
     description: 'Không tìm thấy menu loại công việc',
   })
   async getMenuLoaiCongViec() {
-    const content = await this.congViecService.getMenuLoaiCongViec();
-    return successResponse(content, 'Lấy menu loại công việc thành công');
+    return await this.congViecService.getMenuLoaiCongViec();
   }
 
   // GET api/cong-viec/{id}

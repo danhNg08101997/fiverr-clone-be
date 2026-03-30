@@ -8,6 +8,10 @@ import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-lo
 import { PrismaService } from '../../../prisma/prisma.service';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import { UpdateNhomChiTietLoaiCongViecDto } from './dtos/update-nhom-chi-tiet-loai-cong-viec.dto';
+import {
+  paginationResponse,
+  successResponse,
+} from '../../common/utils/response.util';
 
 @Injectable()
 export class NhomChiTietLoaiCongViecService {
@@ -36,11 +40,10 @@ export class NhomChiTietLoaiCongViecService {
         },
       });
 
-    return {
-      statusCode: 201,
-      message: 'Tạo nhóm chi tiết loại công việc thành công',
-      data: newNhomChiTietLoaiCongViec,
-    };
+    return successResponse(
+      newNhomChiTietLoaiCongViec,
+      'Tạo nhóm chi tiết loại công việc thành công',
+    );
   }
 
   async findAll() {
@@ -49,10 +52,10 @@ export class NhomChiTietLoaiCongViecService {
         include: { ChiTietLoaiCongViecs: true },
       });
 
-    return {
-      statusCode: 200,
-      content: nhomChiTietLoaiCongViecAll,
-    };
+    return successResponse(
+      nhomChiTietLoaiCongViecAll,
+      'Lấy danh sách nhóm chi tiết loại công việc thành công',
+    );
   }
 
   async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
@@ -88,19 +91,17 @@ export class NhomChiTietLoaiCongViecService {
       }),
     ]);
 
-    return {
-      statusCode: 200,
-      message:
-        'Lấy danh sách nhóm chi tiết loại công việc phân trang, tìm kiếm thành công',
-      content: {
+    return paginationResponse(
+      data,
+      {
         pageIndex,
         pageSize,
+        totalItems: totalRow,
+        totalPages: Math.ceil(totalRow / pageSize),
         keyword,
-        totalRow,
-        totalPage: Math.ceil(totalRow / pageSize),
-        data,
       },
-    };
+      'Lấy danh sách nhóm chi tiết loại công việc phân trang, tìm kiếm thành công',
+    );
   }
 
   async findOne(id: string) {
@@ -117,10 +118,10 @@ export class NhomChiTietLoaiCongViecService {
         include: { ChiTietLoaiCongViecs: true },
       });
 
-    return {
-      statusCode: 200,
-      content: nhomLoaiChiTietCongViecTheoId,
-    };
+    return successResponse(
+      nhomLoaiChiTietCongViecTheoId,
+      'Lấy nhóm loại chi tiết công việc theo Id thành công',
+    );
   }
 
   async update(id: string, data: UpdateNhomChiTietLoaiCongViecDto) {
@@ -152,10 +153,9 @@ export class NhomChiTietLoaiCongViecService {
         data: updateData,
       });
 
-    return {
-      statusCode: 200,
-      message: 'Cập nhật nhóm chi tiết loại công việc thành công',
-      content: nhomChiTietLoaiCongViecUpdated,
-    };
+    return successResponse(
+      nhomChiTietLoaiCongViecUpdated,
+      'Cập nhật nhóm chi tiết loại công việc thành công',
+    );
   }
 }

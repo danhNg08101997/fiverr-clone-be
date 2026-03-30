@@ -2,6 +2,10 @@ import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
+import {
+  paginationResponse,
+  successResponse,
+} from '../../common/utils/response.util';
 
 @Injectable()
 export class CongViecService {
@@ -34,20 +38,13 @@ export class CongViecService {
       },
     });
 
-    return {
-      statusCode: 201,
-      message: 'Tạo công việc thành công',
-      data: newCongViec,
-    };
+    return successResponse(newCongViec, 'Tạo mới công việc thành công');
   }
 
   async findAll() {
     const congViecAll = await this.prisma.congViec.findMany();
 
-    return {
-      statusCode: 200,
-      content: congViecAll,
-    };
+    return successResponse(congViecAll, 'Lấy danh sách công việc thành công');
   }
 
   async findOne(id: string) {
@@ -62,10 +59,7 @@ export class CongViecService {
       where: { id: Number(id) },
     });
 
-    return {
-      statusCode: 200,
-      content: congViecTheoId,
-    };
+    return successResponse(congViecTheoId, 'Lấy công việc theo Id thành công');
   }
 
   async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
@@ -101,18 +95,17 @@ export class CongViecService {
       }),
     ]);
 
-    return {
-      statusCode: 200,
-      message: 'Lấy danh công việc phân trang, tìm kiếm thành công',
-      content: {
+    return paginationResponse(
+      data,
+      {
         pageIndex,
         pageSize,
+        totalPages: Math.ceil(totalRow / pageSize),
+        totalItems: totalRow,
         keyword,
-        totalRow,
-        totalPage: Math.ceil(totalRow / pageSize),
-        data,
       },
-    };
+      'Lấy danh công việc phân trang, tìm kiếm thành công',
+    );
   }
 
   async getMenuLoaiCongViec() {
@@ -139,7 +132,10 @@ export class CongViecService {
       },
     });
 
-    return menuLoaiCongViec.map(this.transformMenuLoaiCongViec.bind(this));
+    return successResponse(
+      menuLoaiCongViec.map(this.transformMenuLoaiCongViec.bind(this)),
+      'Lấy menu công việc thành công',
+    );
   }
 
   private transformMenuLoaiCongViec(loaiCongViec: {

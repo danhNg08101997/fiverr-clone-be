@@ -1,6 +1,7 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateChiTietLoaiCongViecDto } from './dtos/create-chi-tiet-loai-cong-viec.dto';
+import { successResponse } from '../../common/utils/response.util';
 
 @Injectable()
 export class ChiTietLoaiCongViecService {
@@ -29,10 +30,9 @@ export class ChiTietLoaiCongViecService {
       },
     );
 
-    return {
-      statusCode: 201,
-      message: 'Tạo chi tiết loại công việc thành công',
-      data: newChiTietLoaiCongViec,
-    };
+    return successResponse(
+      newChiTietLoaiCongViec,
+      'Tạo chi tiết loại công việc thành công',
+    );
   }
 }

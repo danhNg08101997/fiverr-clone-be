@@ -9,6 +9,7 @@ export interface PaginationMeta {
   pageSize: number;
   totalItems: number;
   totalPages: number;
+  keyword: string;
 }
 
 export interface PaginationResponse<T> {

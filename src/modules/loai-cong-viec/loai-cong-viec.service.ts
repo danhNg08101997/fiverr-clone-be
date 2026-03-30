@@ -8,6 +8,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
+import { paginationResponse, successResponse } from '../../common/utils/response.util';
 
 @Injectable()
 export class LoaiCongViecService {
@@ -40,11 +41,7 @@ export class LoaiCongViecService {
       },
     });
 
-    return {
-      statusCode: 201,
-      message: 'Tạo loại công việc thành công',
-      content: newLoaiCongViec,
-    };
+    return successResponse(newLoaiCongViec, 'Tạo loại công việc thành công');
   }
 
   async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
@@ -80,18 +77,17 @@ export class LoaiCongViecService {
       }),
     ]);
 
-    return {
-      statusCode: 200,
-      message: 'Lấy danh sách loại công việc phân trang, tìm kiếm thành công',
-      content: {
+    return paginationResponse(
+      data,
+      {
         pageIndex,
         pageSize,
+        totalItems: totalRow,
+        totalPages: Math.ceil(totalRow / pageSize),
         keyword,
-        totalRow,
-        totalPage: Math.ceil(totalRow / pageSize),
-        data,
       },
-    };
+      'Lấy danh sách loại công việc phân trang, tìm kiếm thành công',
+    );
   }
 
   async findOne(id: string) {
@@ -106,10 +102,10 @@ export class LoaiCongViecService {
       where: { id: Number(id) },
     });
 
-    return {
-      statusCode: 200,
-      content: loaiCongViecTheoId,
-    };
+    return successResponse(
+      loaiCongViecTheoId,
+      'Lấy loại công việc theo Id thành công',
+    );
   }
 
   async update(id: string, data: UpdateLoaiCongViecDto) {
@@ -140,10 +136,9 @@ export class LoaiCongViecService {
       data: updateData,
     });
 
-    return {
-      statusCode: 200,
-      message: 'Cập nhật loại công việc thành công',
-      content: loaiCongViecUpdated,
-    };
+    return successResponse(
+      loaiCongViecUpdated,
+      'Cập nhật loại công việc thành công',
+    );
   }
 }
