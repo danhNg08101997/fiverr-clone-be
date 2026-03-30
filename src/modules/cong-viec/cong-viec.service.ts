@@ -1,4 +1,9 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
@@ -6,6 +11,8 @@ import {
   paginationResponse,
   successResponse,
 } from '../../common/utils/response.util';
+import { UpdateLoaiCongViecDto } from '../loai-cong-viec/dtos/update-loai-cong-viec.dto';
+import { UpdateCongViecDto } from './dtos/update-cong-viec.dto';
 
 @Injectable()
 export class CongViecService {
@@ -34,7 +41,7 @@ export class CongViecService {
         mo_ta_ngan: dto.moTaNgan ?? '',
         sao_cong_viec: dto.saoCongViec ?? 0,
         ma_chi_tiet_loai: dto.maChiTietLoai,
-        nguoi_tao: dto.nguoiTao ?? '',
+        nguoi_tao: dto.nguoiTao ?? 0,
       },
     });
 
@@ -120,6 +127,7 @@ export class CongViecService {
             id: true,
             ten_nhom: true,
             hinh_anh: true,
+            ma_loai_cong_viec: true,
             ChiTietLoaiCongViecs: {
               orderBy: { id: 'asc' },
               select: {
@@ -133,18 +141,133 @@ export class CongViecService {
     });
 
     return successResponse(
-      menuLoaiCongViec.map(this.transformMenuLoaiCongViec.bind(this)),
+      menuLoaiCongViec.map(this.transformApiCongViecRes.bind(this)),
       'Lấy menu công việc thành công',
     );
   }
 
-  private transformMenuLoaiCongViec(loaiCongViec: {
+  async update(id: string, data: UpdateCongViecDto) {
+    const isExist = await this.prisma.congViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!isExist) {
+      throw new NotFoundException(
+        `Không tìm thấy loại công việc với id = ${id}`,
+      );
+    }
+
+    const updateData: Record<string, any> = {};
+
+    if (data.tenCongViec !== undefined) {
+      updateData.ten_cong_viec = data.tenCongViec;
+    }
+
+    if (data.giaTien !== undefined) {
+      updateData.gia_tien = data.giaTien;
+    }
+
+    if (data.moTa !== undefined) {
+      updateData.mo_ta = data.moTa;
+    }
+
+    if (data.moTaNgan !== undefined) {
+      updateData.mo_ta_ngan = data.moTaNgan;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      throw new BadRequestException('Không có dữ liệu hợp lệ để cập nhật');
+    }
+
+    const congViecUpdated = await this.prisma.congViec.update({
+      where: { id: Number(id) },
+      data: updateData,
+    });
+
+    return successResponse(congViecUpdated, 'Cập nhật công việc thành công');
+  }
+
+  async getChiTietLoaiCongViec(maLoaiCongViec: string) {
+    const chiTietLoaiCongViec = await this.prisma.loaiCongViec.findMany({
+      where: { id: Number(maLoaiCongViec) },
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        ten_loai_cong_viec: true,
+        NhomChiTietLoaiCongViecs: {
+          where: { ma_loai_cong_viec: Number(maLoaiCongViec) },
+          orderBy: { id: 'asc' },
+          select: {
+            id: true,
+            ten_nhom: true,
+            hinh_anh: true,
+            ma_loai_cong_viec: true,
+            ChiTietLoaiCongViecs: {
+              orderBy: { id: 'asc' },
+              select: {
+                id: true,
+                ten_chi_tiet: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return successResponse(
+      chiTietLoaiCongViec.map(this.transformApiCongViecRes.bind(this)),
+      'Lấy danh sách chi tiết loại công việc theo maLoaiCongViec thành công',
+    );
+  }
+
+  async getCongViecTheoChiTietLoai(maChiTietLoai: string) {
+    const congViecTheoChiTietLoai = await this.prisma.congViec.findMany({
+      where: { ma_chi_tiet_loai: Number(maChiTietLoai) },
+      include: {
+        NguoiDung: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true,
+          },
+        },
+        ChiTietLoaiCongViec: {
+          select: {
+            id: true,
+            ten_chi_tiet: true,
+            NhomChiTietLoaiCongViec: {
+              select: {
+                id: true,
+                ten_nhom: true,
+                LoaiCongViec: {
+                  select: {
+                    id: true,
+                    ten_loai_cong_viec: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return successResponse(
+      congViecTheoChiTietLoai.map(
+        this.transformApiCongViecTheoChiTietLoaiRes.bind(this),
+      ),
+      'Lấy công việc theo mã chi tiết loại thành công',
+    );
+  }
+
+  private transformApiCongViecRes(loaiCongViec: {
     id: number;
     ten_loai_cong_viec: string;
     NhomChiTietLoaiCongViecs: {
       id: number;
       ten_nhom: string;
       hinh_anh: string | null;
+      ma_loai_cong_viec: number;
       ChiTietLoaiCongViecs: {
         id: number;
         ten_chi_tiet: string;
@@ -158,11 +281,62 @@ export class CongViecService {
         id: nhom.id,
         tenNhom: nhom.ten_nhom,
         hinhAnh: nhom.hinh_anh,
+        maLoaiCongViec: nhom.ma_loai_cong_viec,
         dsChiTietLoai: nhom.ChiTietLoaiCongViecs.map((chiTiet) => ({
           id: chiTiet.id,
           tenChiTiet: chiTiet.ten_chi_tiet,
         })),
       })),
+    };
+  }
+
+  private transformApiCongViecTheoChiTietLoaiRes(congViec: {
+    id: number;
+    ten_cong_viec: string;
+    danh_gia: number;
+    gia_tien: number;
+    nguoi_tao: number;
+    hinh_anh: string;
+    mo_ta: string;
+    ma_chi_tiet_loai: number;
+    mo_ta_ngan: string;
+    sao_cong_viec: number;
+    ChiTietLoaiCongViec: {
+      ten_chi_tiet: string;
+      NhomChiTietLoaiCongViec: {
+        ten_nhom: string;
+        LoaiCongViec: {
+          ten_loai_cong_viec: string;
+        };
+      };
+    };
+    NguoiDung: {
+      name: string;
+      avatar: string;
+    };
+  }) {
+    return {
+      id: congViec.id,
+      CongViec: {
+        id: congViec.id,
+        tenCongViec: congViec.ten_cong_viec,
+        danhGia: congViec.danh_gia,
+        giaTien: congViec.gia_tien,
+        nguoiTao: congViec.nguoi_tao,
+        hinhAnh: congViec.hinh_anh,
+        moTa: congViec.mo_ta,
+        maChiTietLoaiCongViec: congViec.ma_chi_tiet_loai,
+        moTaNgan: congViec.mo_ta_ngan,
+        saoCongViec: congViec.sao_cong_viec,
+      },
+      tenLoaiCongViec:
+        congViec.ChiTietLoaiCongViec.NhomChiTietLoaiCongViec.LoaiCongViec
+          .ten_loai_cong_viec,
+      tenNhomChiTietLoai:
+        congViec.ChiTietLoaiCongViec.NhomChiTietLoaiCongViec.ten_nhom,
+      tenChiTietLoai: congViec.ChiTietLoaiCongViec.ten_chi_tiet,
+      tenNguoiTao: congViec.NguoiDung.name,
+      avatar: congViec.NguoiDung.avatar,
     };
   }
 }

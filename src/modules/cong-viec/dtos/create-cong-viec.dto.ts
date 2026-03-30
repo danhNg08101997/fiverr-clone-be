@@ -1,4 +1,5 @@
 import {
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -51,9 +52,9 @@ export class CreateCongViecDto {
     example: 'Mô tả chi tiết cho công việc...',
   })
   @IsOptional()
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  nguoiTao?: string;
+  nguoiTao?: number;
 
   @ApiProperty({
     example: 'Mô tả ngắn cho công việc',

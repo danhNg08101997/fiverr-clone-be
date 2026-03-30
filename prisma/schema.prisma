@@ -18,11 +18,13 @@ model NguoiDung {
   skill         Json?
   certification Json?
   refresh_token String?
+  avatar        String?   @db.Text
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
 
   thueCongViec  ThueCongViec[]
   binhLuans     BinhLuan[]
+  CongViec  CongViec[]
 
   @@map("NguoiDung")
 }
@@ -49,8 +51,8 @@ model CongViec {
   ten_cong_viec       String
   danh_gia            Int                 @default(0)
   gia_tien            Int
-  nguoi_tao           String
-  hinh_anh            String?
+  nguoi_tao           Int
+  hinh_anh            String?             @db.Text
   mo_ta               String              @db.Text
   mo_ta_ngan          String              @db.Text
   sao_cong_viec       Int                 @default(0)
@@ -58,11 +60,14 @@ model CongViec {
   created_at          DateTime            @default(now())
   updated_at          DateTime            @updatedAt
 
-  ChiTietLoaiCongViec ChiTietLoaiCongViec @relation(fields: [ma_chi_tiet_loai], references: [id])
   ThueCongViecs       ThueCongViec[]
   BinhLuans           BinhLuan[]
 
+  ChiTietLoaiCongViec ChiTietLoaiCongViec @relation(fields: [ma_chi_tiet_loai], references: [id])
+  NguoiDung           NguoiDung           @relation(fields: [nguoi_tao], references: [id])
+
   @@index([ma_chi_tiet_loai])
+  @@index([nguoi_tao])
   @@map("CongViec")
 }
 
