@@ -1,12 +1,11 @@
 import {
   Injectable,
+  Logger,
   OnModuleDestroy,
   OnModuleInit,
-  Logger,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 @Injectable()
 export class PrismaService
@@ -15,19 +14,14 @@ export class PrismaService
 {
   private readonly logger = new Logger(PrismaService.name);
 
-  constructor(private readonly configService: ConfigService) {
-    const adapter = new PrismaMariaDb({
-      host: configService.get<string>('DATABASE_HOST', 'localhost'),
-      port: Number(configService.get<number>('DATABASE_PORT', 3306)),
-      user: configService.get<string>('DATABASE_USER', 'root'),
-      password: configService.get<string>('DATABASE_PASSWORD', ''),
-      database: configService.get<string>('DATABASE_NAME', ''),
+  constructor() {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL!,
     });
-
     super({
       adapter,
       log:
-        configService.get<string>('NODE_ENV') === 'development'
+        process.env.NODE_ENV === 'development'
           ? ['query', 'info', 'warn', 'error']
           : ['warn', 'error'],
     });
