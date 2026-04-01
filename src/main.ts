@@ -72,10 +72,10 @@ async function bootstrap() {
     `,
   });
 
-  const port = Number(process.env.PORT || 3000);
+  const port = Number(process.env.PORT) || 10000;
   await app.listen(port, '0.0.0.0');
 
-  console.log(`Application is running on: ${await app.getUrl()}`);
-  console.log(`Swagger is running on: ${await app.getUrl()}/swagger`);
+  console.log(`Application is running on:  ${port}`);
+  console.log(`Swagger is running on: ${port}/swagger`);
 }
 bootstrap();
