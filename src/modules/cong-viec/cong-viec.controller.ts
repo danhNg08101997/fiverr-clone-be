@@ -88,4 +88,11 @@ export class CongViecController {
   getCongVietTheoTen(@Param('TenCongViec') tenCongViec: string) {
     return this.congViecService.getCongVietTheoTen(tenCongViec);
   }
+
+  // GET api/cong-viec/lay-cong-viec-chi-tiet/{MaCongViec}
+  @Get('lay-cong-viec-chi-tiet/:MaCongViec')
+  @ApiParam({ name: 'MaCongViec', type: Number })
+  getCongViecTheoMaCongViec(@Param('MaCongViec') maCongViec: string) {
+    return this.congViecService.getCongViecTheoMaCongViec(maCongViec);
+  }
 }
