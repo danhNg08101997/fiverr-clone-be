@@ -152,9 +152,7 @@ export class CongViecService {
     });
 
     if (!isExist) {
-      throw new NotFoundException(
-        `Không tìm thấy loại công việc với id = ${id}`,
-      );
+      throw new NotFoundException(`Không tìm thấy công việc với id = ${id}`);
     }
 
     const updateData: Record<string, any> = {};
