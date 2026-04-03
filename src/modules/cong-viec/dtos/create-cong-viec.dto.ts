@@ -14,7 +14,7 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCongViecDto {
-  @ApiProperty({ example: 'I will design a minimalist logo' })
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
@@ -28,14 +28,14 @@ export class CreateCongViecDto {
   @IsOptional()
   danhGia?: number; // PROD => không nên cho client tự nhập => nên để service/backend tự tính
 
-  @ApiProperty({ example: 150 })
+  @ApiProperty()
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
   giaTien?: number;
 
-  @ApiProperty({ example: 'https://example.com/image.jpg' })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -48,31 +48,27 @@ export class CreateCongViecDto {
   )
   hinhAnh?: string;
 
-  @ApiProperty({
-    example: 'Mô tả chi tiết cho công việc...',
-  })
+  @ApiProperty()
   @IsOptional()
   @IsInt()
   @IsNotEmpty()
   nguoiTao?: number;
 
-  @ApiProperty({
-    example: 'Mô tả ngắn cho công việc',
-  })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(20)
   moTa?: string;
 
-  @ApiProperty({ example: 5 })
+  @ApiProperty()
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(10)
   moTaNgan?: string;
 
-  @ApiProperty({ example: 1 })
+  @ApiProperty()
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -81,7 +77,7 @@ export class CreateCongViecDto {
   @IsOptional()
   saoCongViec?: number; // PROD => không nên cho client tự nhập => nên để service/backend tự tính
 
-  @ApiProperty({ example: 1 })
+  @ApiProperty()
   @Type(() => Number)
   @IsInt()
   @IsPositive()
