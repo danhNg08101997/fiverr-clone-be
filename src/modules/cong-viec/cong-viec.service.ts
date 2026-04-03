@@ -298,7 +298,7 @@ export class CongViecService {
   }
 
   async getCongViecTheoMaCongViec(maCongViec: string) {
-    const congViecTheoMaCongViec = await this.prisma.congViec.findUnique({
+    const congViecTheoMaCongViec = await this.prisma.congViec.findMany({
       where: { id: Number(maCongViec) },
       include: {
         NguoiDung: {
@@ -330,7 +330,9 @@ export class CongViecService {
     });
 
     return successResponse(
-      this.transformApiCongViecTheoChiTietLoaiRes.bind(congViecTheoMaCongViec),
+      congViecTheoMaCongViec.map(
+        this.transformApiCongViecTheoChiTietLoaiRes.bind(this),
+      ),
       'Lấy công việc theo mã công việc thành công',
     );
   }
