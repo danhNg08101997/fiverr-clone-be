@@ -8,19 +8,27 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
-import { paginationResponse, successResponse } from '../../common/utils/response.util';
+import {
+  paginationResponse,
+  successResponse,
+} from '../../common/utils/response.util';
 
 @Injectable()
 export class LoaiCongViecService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    const loaiCongViecAll = await this.prisma.loaiCongViec.findMany();
+    const loaiCongViecAll = await this.prisma.loaiCongViec.findMany({
+      select: {
+        id: true,
+        ten_loai_cong_viec: true,
+      },
+    });
 
-    return {
-      statusCode: 200,
-      content: loaiCongViecAll,
-    };
+    return successResponse(
+      loaiCongViecAll.map(this.transformLoaiCongViecRes.bind(this)),
+      'Lấy danh sách loại công việc thành công',
+    );
   }
 
   async create(dto: CreateLoaiCongViecDto) {
@@ -78,7 +86,7 @@ export class LoaiCongViecService {
     ]);
 
     return paginationResponse(
-      data,
+      data.map(this.transformLoaiCongViecRes.bind(this)),
       {
         pageIndex,
         pageSize,
@@ -140,5 +148,15 @@ export class LoaiCongViecService {
       loaiCongViecUpdated,
       'Cập nhật loại công việc thành công',
     );
+  }
+
+  private transformLoaiCongViecRes(loaiCongViec: {
+    id: string;
+    ten_loai_cong_viec: string;
+  }) {
+    return {
+      id: loaiCongViec.id,
+      tenLoaiCongViec: loaiCongViec.ten_loai_cong_viec,
+    };
   }
 }

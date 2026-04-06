@@ -10,6 +10,7 @@ import { LoaiCongViecModule } from './modules/loai-cong-viec/loai-cong-viec.modu
 import { NhomChiTietLoaiCongViecModule } from './modules/nhom-chi-tiet-loai-cong-viec/nhom-chi-tiet-loai-cong-viec.module';
 import { ChiTietLoaiCongViecModule } from './modules/chi-tiet-loai-cong-viec/chi-tiet-loai-cong-viec.module';
 import { ConfigModule } from '@nestjs/config';
+import { BinhLuanModule } from './modules/binh-luan/binh-luan.module';
 
 @Module({
   imports: [
@@ -19,10 +20,11 @@ import { ConfigModule } from '@nestjs/config';
     }),
     PrismaModule,
     AuthModule,
-    CongViecModule,
+    BinhLuanModule,
     LoaiCongViecModule,
     NhomChiTietLoaiCongViecModule,
     ChiTietLoaiCongViecModule,
+    CongViecModule,
   ],
   controllers: [AppController],
   providers: [
