@@ -51,7 +51,10 @@ export class CongViecService {
   async findAll() {
     const congViecAll = await this.prisma.congViec.findMany();
 
-    return successResponse(congViecAll, 'Lấy danh sách công việc thành công');
+    return successResponse(
+      congViecAll.map(this.transformCongViecRes.bind(this)),
+      'Lấy danh sách công việc thành công',
+    );
   }
 
   async findOne(id: string) {
@@ -64,9 +67,31 @@ export class CongViecService {
 
     const congViecTheoId = await this.prisma.congViec.findUnique({
       where: { id: Number(id) },
+      select: {
+        id: true,
+        ten_cong_viec: true,
+        danh_gia: true,
+        gia_tien: true,
+        nguoi_tao: true,
+        hinh_anh: true,
+        mo_ta: true,
+        ma_chi_tiet_loai: true,
+        mo_ta_ngan: true,
+        sao_cong_viec: true,
+      },
     });
 
-    return successResponse(congViecTheoId, 'Lấy công việc theo Id thành công');
+    const mappedCongViec = congViecTheoId && {
+      ...congViecTheoId,
+      hinh_anh: congViecTheoId.hinh_anh ?? '',
+    };
+
+    if (!mappedCongViec) return;
+
+    return successResponse(
+      this.transformCongViecRes(mappedCongViec),
+      'Lấy công việc theo Id thành công',
+    );
   }
 
   async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
@@ -414,6 +439,32 @@ export class CongViecService {
       tenChiTietLoai: congViec.ChiTietLoaiCongViec.ten_chi_tiet,
       tenNguoiTao: congViec.NguoiDung.name,
       avatar: congViec.NguoiDung.avatar,
+    };
+  }
+
+  private transformCongViecRes(congViec: {
+    id: number;
+    ten_cong_viec: string;
+    danh_gia: number;
+    gia_tien: number;
+    nguoi_tao: number;
+    hinh_anh: string;
+    mo_ta: string;
+    ma_chi_tiet_loai: number;
+    mo_ta_ngan: string;
+    sao_cong_viec: number;
+  }) {
+    return {
+      id: congViec.id,
+      tenCongViec: congViec.ten_cong_viec,
+      danhGia: congViec.danh_gia,
+      giaTien: congViec.gia_tien,
+      nguoiTao: congViec.nguoi_tao,
+      hinhAnh: congViec.hinh_anh ?? '',
+      moTa: congViec.mo_ta,
+      maChiTietLoai: congViec.ma_chi_tiet_loai,
+      moTaNgan: congViec.mo_ta_ngan,
+      saoCongViec: congViec.sao_cong_viec,
     };
   }
 }

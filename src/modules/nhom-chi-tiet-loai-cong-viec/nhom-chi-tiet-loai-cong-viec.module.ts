@@ -4,6 +4,6 @@ import { NhomChiTietLoaiCongViecService } from './nhom-chi-tiet-loai-cong-viec.s
 
 @Module({
   controllers: [NhomChiTietLoaiCongViecController],
-  providers: [NhomChiTietLoaiCongViecService]
+  providers: [NhomChiTietLoaiCongViecService],
 })
 export class NhomChiTietLoaiCongViecModule {}
