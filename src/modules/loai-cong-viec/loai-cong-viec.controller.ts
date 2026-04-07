@@ -79,8 +79,13 @@ export class LoaiCongViecController {
   }
 
   // DELETE api/loai-cong-viec/{id}
-  // @Delete(':id')
-  // deleteLoaiCongViec(@Param('id') id: string) {
-  //   return this.loaiCongViecService.deleteLoaiCongViec(id);
-  // }
+  @Delete(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'Xóa loại công việc theo Id thành công',
+  })
+  deleteLoaiCongViec(@Param('id') id: string) {
+    return this.loaiCongViecService.deleteLoaiCongViec(id);
+  }
 }

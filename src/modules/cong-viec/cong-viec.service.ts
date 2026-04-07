@@ -33,14 +33,14 @@ export class CongViecService {
 
     const newCongViec = await this.prisma.congViec.create({
       data: {
-        ten_cong_viec: dto.tenCongViec,
+        ten_cong_viec: dto.tenCongViec ?? '',
         danh_gia: dto.danhGia ?? 0,
         gia_tien: dto.giaTien ?? 0,
         hinh_anh: dto.hinhAnh ?? '',
         mo_ta: dto.moTa ?? '',
         mo_ta_ngan: dto.moTaNgan ?? '',
         sao_cong_viec: dto.saoCongViec ?? 0,
-        ma_chi_tiet_loai: dto.maChiTietLoai,
+        ma_chi_tiet_loai: dto.maChiTietLoai ?? 0,
         nguoi_tao: dto.nguoiTao ?? 0,
       },
     });
@@ -81,12 +81,12 @@ export class CongViecService {
       },
     });
 
-    const mappedCongViec = congViecTheoId && {
+    if (!congViecTheoId) return;
+
+    const mappedCongViec = {
       ...congViecTheoId,
       hinh_anh: congViecTheoId.hinh_anh ?? '',
     };
-
-    if (!mappedCongViec) return;
 
     return successResponse(
       this.transformCongViecRes(mappedCongViec),
@@ -128,7 +128,7 @@ export class CongViecService {
     ]);
 
     return paginationResponse(
-      data,
+      data.map(this.transformCongViecRes.bind(this)),
       {
         pageIndex,
         pageSize,

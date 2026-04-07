@@ -34,8 +34,8 @@ export class NhomChiTietLoaiCongViecService {
     const newNhomChiTietLoaiCongViec =
       await this.prisma.nhomChiTietLoaiCongViec.create({
         data: {
-          ten_nhom: dto.tenNhom,
-          hinh_anh: dto.hinhAnh,
+          ten_nhom: dto.tenNhom ?? '',
+          hinh_anh: dto.hinhAnh ?? '',
           ma_loai_cong_viec: dto.maLoaiCongViec,
         },
       });
@@ -53,7 +53,9 @@ export class NhomChiTietLoaiCongViecService {
       });
 
     return successResponse(
-      nhomChiTietLoaiCongViecAll,
+      nhomChiTietLoaiCongViecAll.map(
+        this.transformNhomLoaiCongViecTheoChiTietLoaiRes.bind(this),
+      ),
       'Lấy danh sách nhóm chi tiết loại công việc thành công',
     );
   }
@@ -92,7 +94,7 @@ export class NhomChiTietLoaiCongViecService {
     ]);
 
     return paginationResponse(
-      data,
+      data.map(this.transformNhomLoaiCongViecRes.bind(this)),
       {
         pageIndex,
         pageSize,
@@ -112,14 +114,32 @@ export class NhomChiTietLoaiCongViecService {
       );
     }
 
-    const nhomLoaiChiTietCongViecTheoId =
+    const nhomChiTietLoaiCongViecTheoId =
       await this.prisma.nhomChiTietLoaiCongViec.findUnique({
         where: { id: Number(id) },
-        include: { ChiTietLoaiCongViecs: true },
+        select: {
+          id: true,
+          ten_nhom: true,
+          hinh_anh: true,
+          ma_loai_cong_viec: true,
+          ChiTietLoaiCongViecs: {
+            select: {
+              id: true,
+              ten_chi_tiet: true,
+            },
+          },
+        },
       });
 
+    if (!nhomChiTietLoaiCongViecTheoId) return;
+
+    const result = {
+      ...nhomChiTietLoaiCongViecTheoId,
+      hinh_anh: nhomChiTietLoaiCongViecTheoId.hinh_anh ?? '',
+    };
+
     return successResponse(
-      nhomLoaiChiTietCongViecTheoId,
+      this.transformNhomLoaiCongViecTheoChiTietLoaiRes(result),
       'Lấy nhóm loại chi tiết công việc theo Id thành công',
     );
   }
@@ -157,5 +177,43 @@ export class NhomChiTietLoaiCongViecService {
       nhomChiTietLoaiCongViecUpdated,
       'Cập nhật nhóm chi tiết loại công việc thành công',
     );
+  }
+
+  private transformNhomLoaiCongViecTheoChiTietLoaiRes(nhomLoaiCongViec: {
+    id: number;
+    ten_nhom: string;
+    hinh_anh: string;
+    ma_loai_cong_viec: number;
+    ChiTietLoaiCongViecs: {
+      id: number;
+      ten_chi_tiet: string;
+    }[];
+  }) {
+    return {
+      id: nhomLoaiCongViec.id,
+      tenNhom: nhomLoaiCongViec.ten_nhom,
+      hinhAnh: nhomLoaiCongViec.hinh_anh,
+      maLoaiCongViec: nhomLoaiCongViec.ma_loai_cong_viec,
+      dsChiTietLoaiCongViec: nhomLoaiCongViec.ChiTietLoaiCongViecs.map(
+        (chiTietLoaiCongViec) => ({
+          id: chiTietLoaiCongViec.id,
+          tenChiTiet: chiTietLoaiCongViec.ten_chi_tiet,
+        }),
+      ),
+    };
+  }
+
+  private transformNhomLoaiCongViecRes(nhomLoaiCongViec: {
+    id: number;
+    ten_nhom: string;
+    hinh_anh: string;
+    ma_loai_cong_viec: number;
+  }) {
+    return {
+      id: nhomLoaiCongViec.id,
+      tenNhom: nhomLoaiCongViec.ten_nhom,
+      hinhAnh: nhomLoaiCongViec.hinh_anh,
+      maLoaicongViec: nhomLoaiCongViec.ma_loai_cong_viec,
+    };
   }
 }

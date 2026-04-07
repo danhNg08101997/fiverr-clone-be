@@ -17,20 +17,6 @@ import {
 export class LoaiCongViecService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
-    const loaiCongViecAll = await this.prisma.loaiCongViec.findMany({
-      select: {
-        id: true,
-        ten_loai_cong_viec: true,
-      },
-    });
-
-    return successResponse(
-      loaiCongViecAll.map(this.transformLoaiCongViecRes.bind(this)),
-      'Lấy danh sách loại công việc thành công',
-    );
-  }
-
   async create(dto: CreateLoaiCongViecDto) {
     const isDuplicate = await this.prisma.loaiCongViec.findFirst({
       where: { ten_loai_cong_viec: dto.tenLoaiCongViec },
@@ -45,11 +31,25 @@ export class LoaiCongViecService {
 
     const newLoaiCongViec = await this.prisma.loaiCongViec.create({
       data: {
-        ten_loai_cong_viec: dto.tenLoaiCongViec,
+        ten_loai_cong_viec: dto.tenLoaiCongViec ?? '',
       },
     });
 
     return successResponse(newLoaiCongViec, 'Tạo loại công việc thành công');
+  }
+
+  async findAll() {
+    const loaiCongViecAll = await this.prisma.loaiCongViec.findMany({
+      select: {
+        id: true,
+        ten_loai_cong_viec: true,
+      },
+    });
+
+    return successResponse(
+      loaiCongViecAll.map(this.transformLoaiCongViecRes.bind(this)),
+      'Lấy danh sách loại công việc thành công',
+    );
   }
 
   async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
@@ -108,10 +108,16 @@ export class LoaiCongViecService {
 
     const loaiCongViecTheoId = await this.prisma.loaiCongViec.findUnique({
       where: { id: Number(id) },
+      select: {
+        id: true,
+        ten_loai_cong_viec: true,
+      },
     });
 
+    if (!loaiCongViecTheoId) return;
+
     return successResponse(
-      loaiCongViecTheoId,
+      this.transformLoaiCongViecRes(loaiCongViecTheoId),
       'Lấy loại công việc theo Id thành công',
     );
   }
@@ -150,8 +156,29 @@ export class LoaiCongViecService {
     );
   }
 
+  async deleteLoaiCongViec(id: string) {
+    const isExist = await this.prisma.loaiCongViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!isExist) {
+      throw new NotFoundException(
+        `Không tìm thấy loại công việc với id = ${id}`,
+      );
+    }
+
+    const loaiCongViecDeleted = await this.prisma.loaiCongViec.delete({
+      where: { id: Number(id) },
+    });
+
+    return successResponse(
+      loaiCongViecDeleted,
+      'Xóa loại công việc theo Id thành công',
+    );
+  }
+
   private transformLoaiCongViecRes(loaiCongViec: {
-    id: string;
+    id: number;
     ten_loai_cong_viec: string;
   }) {
     return {

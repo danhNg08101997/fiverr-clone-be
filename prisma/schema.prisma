@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["fiverr_clone"]
 }
 
 model NguoiDung {
@@ -27,7 +26,6 @@ model NguoiDung {
   thueCongViec  ThueCongViec[]
 
   @@map("NguoiDung")
-  @@schema("fiverr_clone")
 }
 
 model ThueCongViec {
@@ -44,7 +42,6 @@ model ThueCongViec {
   @@index([ma_cong_viec])
   @@index([ma_nguoi_thue])
   @@map("ThueCongViec")
-  @@schema("fiverr_clone")
 }
 
 model CongViec {
@@ -68,7 +65,6 @@ model CongViec {
   @@index([ma_chi_tiet_loai])
   @@index([nguoi_tao])
   @@map("CongViec")
-  @@schema("fiverr_clone")
 }
 
 model NhomChiTietLoaiCongViec {
@@ -83,7 +79,6 @@ model NhomChiTietLoaiCongViec {
 
   @@index([ma_loai_cong_viec])
   @@map("NhomChiTietLoaiCongViec")
-  @@schema("fiverr_clone")
 }
 
 model ChiTietLoaiCongViec {
@@ -97,7 +92,6 @@ model ChiTietLoaiCongViec {
 
   @@index([ma_nhom_chi_tiet_loai_cong_viec])
   @@map("ChiTietLoaiCongViec")
-  @@schema("fiverr_clone")
 }
 
 model LoaiCongViec {
@@ -108,14 +102,13 @@ model LoaiCongViec {
   NhomChiTietLoaiCongViecs NhomChiTietLoaiCongViec[]
 
   @@map("LoaiCongViec")
-  @@schema("fiverr_clone")
 }
 
 model BinhLuan {
   id                 Int       @id @default(autoincrement())
   ma_cong_viec       Int
   ma_nguoi_binh_luan Int
-  ngay_binh_luan     DateTime  @default(now())
+  ngay_binh_luan     DateTime
   noi_dung           String
   sao_binh_luan      Int
   created_at         DateTime  @default(now())
@@ -126,5 +119,4 @@ model BinhLuan {
   @@index([ma_cong_viec])
   @@index([ma_nguoi_binh_luan])
   @@map("BinhLuan")
-  @@schema("fiverr_clone")
 }

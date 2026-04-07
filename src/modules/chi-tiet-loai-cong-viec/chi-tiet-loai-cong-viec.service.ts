@@ -11,7 +11,7 @@ export class ChiTietLoaiCongViecService {
   async create(dto: CreateChiTietLoaiCongViecDto) {
     const isDuplicate = await this.prisma.chiTietLoaiCongViec.findFirst({
       where: {
-        ten_chi_tiet: dto.tenChiTiet,
+        ten_chi_tiet: dto.tenChiTiet ?? '',
       },
     });
 
