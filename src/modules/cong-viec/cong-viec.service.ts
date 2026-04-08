@@ -11,7 +11,6 @@ import {
   paginationResponse,
   successResponse,
 } from '../../common/utils/response.util';
-import { UpdateLoaiCongViecDto } from '../loai-cong-viec/dtos/update-loai-cong-viec.dto';
 import { UpdateCongViecDto } from './dtos/update-cong-viec.dto';
 
 @Injectable()
@@ -50,9 +49,8 @@ export class CongViecService {
 
   async findAll() {
     const congViecAll = await this.prisma.congViec.findMany();
-
     return successResponse(
-      congViecAll.map(this.transformCongViecRes.bind(this)),
+      congViecAll.map(this.transformCongViecResV1.bind(this)),
       'Lấy danh sách công việc thành công',
     );
   }
@@ -89,7 +87,7 @@ export class CongViecService {
     };
 
     return successResponse(
-      this.transformCongViecRes(mappedCongViec),
+      this.transformCongViecResV1(mappedCongViec),
       'Lấy công việc theo Id thành công',
     );
   }
@@ -128,7 +126,7 @@ export class CongViecService {
     ]);
 
     return paginationResponse(
-      data.map(this.transformCongViecRes.bind(this)),
+      data.map(this.transformCongViecResV1.bind(this)),
       {
         pageIndex,
         pageSize,
@@ -166,7 +164,7 @@ export class CongViecService {
     });
 
     return successResponse(
-      menuLoaiCongViec.map(this.transformApiCongViecRes.bind(this)),
+      menuLoaiCongViec.map(this.transformCongViecResV2.bind(this)),
       'Lấy menu công việc thành công',
     );
   }
@@ -238,7 +236,7 @@ export class CongViecService {
     });
 
     return successResponse(
-      chiTietLoaiCongViec.map(this.transformApiCongViecRes.bind(this)),
+      chiTietLoaiCongViec.map(this.transformCongViecResV2.bind(this)),
       'Lấy danh sách chi tiết loại công việc theo maLoaiCongViec thành công',
     );
   }
@@ -276,9 +274,7 @@ export class CongViecService {
     });
 
     return successResponse(
-      congViecTheoChiTietLoai.map(
-        this.transformApiCongViecTheoChiTietLoaiRes.bind(this),
-      ),
+      congViecTheoChiTietLoai.map(this.transformCongViecResV3.bind(this)),
       'Lấy công việc theo mã chi tiết loại thành công',
     );
   }
@@ -315,9 +311,7 @@ export class CongViecService {
       },
     });
     return successResponse(
-      congViecTheoTen.map(
-        this.transformApiCongViecTheoChiTietLoaiRes.bind(this),
-      ),
+      congViecTheoTen.map(this.transformCongViecResV3.bind(this)),
       'Lấy công việc theo tên thành công',
     );
   }
@@ -355,14 +349,92 @@ export class CongViecService {
     });
 
     return successResponse(
-      congViecTheoMaCongViec.map(
-        this.transformApiCongViecTheoChiTietLoaiRes.bind(this),
-      ),
+      congViecTheoMaCongViec.map(this.transformCongViecResV3.bind(this)),
       'Lấy công việc theo mã công việc thành công',
     );
   }
 
-  private transformApiCongViecRes(loaiCongViec: {
+  async getCongViecTheoTenCongViec(tenCongViec: string) {
+    const congViecTheoTen = await this.prisma.congViec.findMany({
+      where: { ten_cong_viec: { contains: tenCongViec } },
+      include: {
+        NguoiDung: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true,
+          },
+        },
+        ChiTietLoaiCongViec: {
+          select: {
+            id: true,
+            ten_chi_tiet: true,
+            NhomChiTietLoaiCongViec: {
+              select: {
+                id: true,
+                ten_nhom: true,
+                LoaiCongViec: {
+                  select: {
+                    id: true,
+                    ten_loai_cong_viec: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return successResponse(
+      congViecTheoTen.map(this.transformCongViecResV3.bind(this)),
+      'Lấy công việc theo tên công việc thành công',
+    );
+  }
+
+  async delete(id: string) {
+    const isExist = await this.prisma.congViec.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!isExist) {
+      throw new NotFoundException(`Không tìm thấy công việc với id = ${id}`);
+    }
+
+    const congViecDeleted = await this.prisma.loaiCongViec.delete({
+      where: { id: Number(id) },
+    });
+
+    return successResponse(congViecDeleted, 'Xóa công việc theo Id thành công');
+  }
+
+  private transformCongViecResV1(congViec: {
+    id: number;
+    ten_cong_viec: string;
+    danh_gia: number;
+    gia_tien: number;
+    nguoi_tao: number;
+    hinh_anh: string;
+    mo_ta: string;
+    ma_chi_tiet_loai: number;
+    mo_ta_ngan: string;
+    sao_cong_viec: number;
+  }) {
+    return {
+      id: congViec.id,
+      tenCongViec: congViec.ten_cong_viec,
+      danhGia: congViec.danh_gia,
+      giaTien: congViec.gia_tien,
+      nguoiTao: congViec.nguoi_tao,
+      hinhAnh: congViec.hinh_anh ?? '',
+      moTa: congViec.mo_ta,
+      maChiTietLoai: congViec.ma_chi_tiet_loai,
+      moTaNgan: congViec.mo_ta_ngan,
+      saoCongViec: congViec.sao_cong_viec,
+    };
+  }
+
+  private transformCongViecResV2(loai: {
     id: number;
     ten_loai_cong_viec: string;
     NhomChiTietLoaiCongViecs: {
@@ -377,9 +449,9 @@ export class CongViecService {
     }[];
   }) {
     return {
-      id: loaiCongViec.id,
-      tenLoaiCongViec: loaiCongViec.ten_loai_cong_viec,
-      dsNhomChiTietLoai: loaiCongViec.NhomChiTietLoaiCongViecs.map((nhom) => ({
+      id: loai.id,
+      tenLoaiCongViec: loai.ten_loai_cong_viec,
+      dsNhomChiTietLoai: loai.NhomChiTietLoaiCongViecs.map((nhom) => ({
         id: nhom.id,
         tenNhom: nhom.ten_nhom,
         hinhAnh: nhom.hinh_anh,
@@ -392,7 +464,7 @@ export class CongViecService {
     };
   }
 
-  private transformApiCongViecTheoChiTietLoaiRes(congViec: {
+  private transformCongViecResV3(congViec: {
     id: number;
     ten_cong_viec: string;
     danh_gia: number;
@@ -439,32 +511,6 @@ export class CongViecService {
       tenChiTietLoai: congViec.ChiTietLoaiCongViec.ten_chi_tiet,
       tenNguoiTao: congViec.NguoiDung.name,
       avatar: congViec.NguoiDung.avatar,
-    };
-  }
-
-  private transformCongViecRes(congViec: {
-    id: number;
-    ten_cong_viec: string;
-    danh_gia: number;
-    gia_tien: number;
-    nguoi_tao: number;
-    hinh_anh: string;
-    mo_ta: string;
-    ma_chi_tiet_loai: number;
-    mo_ta_ngan: string;
-    sao_cong_viec: number;
-  }) {
-    return {
-      id: congViec.id,
-      tenCongViec: congViec.ten_cong_viec,
-      danhGia: congViec.danh_gia,
-      giaTien: congViec.gia_tien,
-      nguoiTao: congViec.nguoi_tao,
-      hinhAnh: congViec.hinh_anh ?? '',
-      moTa: congViec.mo_ta,
-      maChiTietLoai: congViec.ma_chi_tiet_loai,
-      moTaNgan: congViec.mo_ta_ngan,
-      saoCongViec: congViec.sao_cong_viec,
     };
   }
 }

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { CongViecService } from './cong-viec.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
@@ -94,5 +103,19 @@ export class CongViecController {
   @ApiParam({ name: 'MaCongViec', type: Number })
   getCongViecTheoMaCongViec(@Param('MaCongViec') maCongViec: string) {
     return this.congViecService.getCongViecTheoMaCongViec(maCongViec);
+  }
+
+  // GET api/cong-viec/lay-danh-sach-cong-viec-theo-ten/{TenCongViec}
+  @Get('lay-danh-sach-cong-viec-theo-ten/:TenCongViec')
+  @ApiParam({ name: 'TenCongViec', type: String })
+  getCongViecTheoTenCongViec(@Param('TenCongViec') tenCongViec: string) {
+    return this.congViecService.getCongViecTheoTenCongViec(tenCongViec);
+  }
+
+  // DELETE api/cong-viec/{id}
+  @Delete(':id')
+  @ApiParam({ name: 'id', type: Number })
+  delete(@Param('id') id: string) {
+    return this.congViecService.delete(id);
   }
 }

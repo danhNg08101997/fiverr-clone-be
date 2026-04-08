@@ -1,7 +1,4 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ErrorHandlingMiddleware } from './common/filters/middleware/error-handling.middleware';
+import { Logger, Module } from '@nestjs/common';
 import { PinoLogger } from './utils/logger/pino.logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -26,9 +23,8 @@ import { BinhLuanModule } from './modules/binh-luan/binh-luan.module';
     ChiTietLoaiCongViecModule,
     CongViecModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: Logger,
       useClass: PinoLogger,
