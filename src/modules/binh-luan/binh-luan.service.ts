@@ -33,7 +33,7 @@ export class BinhLuanService {
         ma_nguoi_binh_luan: dto.maNguoiBinhLuan,
         noi_dung: dto.noiDung,
         sao_binh_luan: dto.saoBinhLuan,
-        ngay_binh_luan: Date.now().toString(),
+        ngay_binh_luan: dto.ngayBinhLuan,
       },
     });
 

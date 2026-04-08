@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateBinhLuanDto {
   @ApiProperty()
@@ -21,4 +21,9 @@ export class CreateBinhLuanDto {
   @IsInt()
   @IsNotEmpty()
   saoBinhLuan: number;
+
+  @ApiProperty()
+  @IsDate()
+  @IsNotEmpty()
+  ngayBinhLuan: Date;
 }
