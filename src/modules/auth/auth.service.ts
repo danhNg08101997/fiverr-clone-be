@@ -123,8 +123,7 @@ export class AuthService {
     );
   }
 
-  async getProfile(userId: number, role: string) {
-    if (role !== 'ADMIN') return successResponse({}, 'Fail', 404);
+  async getProfile(userId: number) {
     const user = await this.prisma.nguoiDung.findUnique({
       where: { id: userId },
       select: {

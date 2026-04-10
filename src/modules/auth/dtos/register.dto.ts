@@ -28,10 +28,6 @@ export class RegisterDto {
   phone?: string;
 
   @ApiProperty()
-  @IsString()
-  role: string;
-
-  @ApiProperty()
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()

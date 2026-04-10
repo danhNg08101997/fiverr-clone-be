@@ -7,12 +7,23 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CongViecService } from './cong-viec.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
 import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UpdateCongViecDto } from './dtos/update-cong-viec.dto';
+import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
+import { RolesGuard } from '../../guard/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../../common/enums/role.enum';
 
 @ApiTags('Công việc')
 @Controller('cong-viec')
@@ -21,6 +32,9 @@ export class CongViecController {
 
   // POST api/cong-viec
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: 'Tạo công việc thành công' })
   create(@Body() dto: CreateCongViecDto) {
     return this.congViecService.create(dto);
@@ -35,6 +49,9 @@ export class CongViecController {
 
   // GET api/cong-viec/phan-trang-tim-kiem
   @Get('phan-trang-tim-kiem')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiQuery({ name: 'pageIndex', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
   @ApiQuery({ name: 'keyword', required: false })
@@ -71,6 +88,9 @@ export class CongViecController {
 
   // PUT api/cong-viec/{id}
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Sửa công việc theo Id thành công' })
   update(@Param('id') id: string, @Body() updateDto: UpdateCongViecDto) {
@@ -114,6 +134,9 @@ export class CongViecController {
 
   // DELETE api/cong-viec/{id}
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number })
   delete(@Param('id') id: string) {
     return this.congViecService.delete(id);

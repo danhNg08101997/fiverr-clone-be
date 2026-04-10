@@ -96,10 +96,7 @@ export class BinhLuanService {
       where: { id: Number(id) },
     });
 
-    return successResponse(
-      binhLuanDeleted,
-      'Xoá binh luận theo công việc thành công',
-    );
+    return successResponse(binhLuanDeleted, 'Xoá bình luận thành công');
   }
 
   private transformApiBinhLuanRes(binhLuan: {
@@ -114,9 +111,17 @@ export class BinhLuanService {
       id: binhLuan.id,
       maCongViec: binhLuan.ma_cong_viec,
       maNguoiBinhLuan: binhLuan.ma_nguoi_binh_luan,
-      ngayBinhLuan: binhLuan.ngay_binh_luan,
+      ngayBinhLuan: this.formatDateUTC(binhLuan.ngay_binh_luan),
       noiDung: binhLuan.noi_dung,
       saoBinhLuan: binhLuan.sao_binh_luan,
     };
+  }
+
+  private formatDateUTC(dateString: string) {
+    const date = new Date(dateString);
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
   }
 }

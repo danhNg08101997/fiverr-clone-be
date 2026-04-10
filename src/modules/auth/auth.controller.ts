@@ -42,12 +42,15 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('profile')
-  async profile(@CurrentUser() user: { userId: number; role: string }) {
-    return this.authService.getProfile(user.userId, user.role);
+  async profile(@CurrentUser() user: { userId: number }) {
+    return this.authService.getProfile(user.userId);
   }
 
   @Post('refresh')
-  async refresh(@Body() body: RefreshTokenDto) {
-    return this.authService.refreshToken(body.userId, body.refreshToken);
+  async refresh(
+    @CurrentUser() user: { userId: number },
+    @Body() body: RefreshTokenDto,
+  ) {
+    return this.authService.refreshToken(user.userId, body.refreshToken);
   }
 }
