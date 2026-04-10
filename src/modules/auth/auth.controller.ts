@@ -42,8 +42,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('profile')
-  async profile(@CurrentUser() user: { userId: number }) {
-    return this.authService.getProfile(user.userId);
+  async profile(@CurrentUser() user: { userId: number; role: string }) {
+    return this.authService.getProfile(user.userId, user.role);
   }
 
   @Post('refresh')
