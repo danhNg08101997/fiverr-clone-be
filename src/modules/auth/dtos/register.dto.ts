@@ -48,4 +48,8 @@ export class RegisterDto {
   @ApiPropertyOptional()
   @IsOptional()
   certification?: string[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  role?: string;
 }
