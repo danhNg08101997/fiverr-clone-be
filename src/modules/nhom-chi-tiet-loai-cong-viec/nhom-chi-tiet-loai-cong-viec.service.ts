@@ -179,6 +179,27 @@ export class NhomChiTietLoaiCongViecService {
     );
   }
 
+  async delete(id: string) {
+    const isExist = await this.prisma.nhomChiTietLoaiCongViec.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!isExist) {
+      throw new NotFoundException(
+        `Không tìm thấy nhóm chi tiết loại công việc với id = ${id}`,
+      );
+    }
+
+    const nhomChiTietLoaiCongViecDeleted =
+      await this.prisma.nhomChiTietLoaiCongViec.delete({
+        where: { id: Number(id) },
+      });
+
+    return successResponse(
+      nhomChiTietLoaiCongViecDeleted,
+      'Xóa nhóm chi tiết loại công việc theo Id thành công',
+    );
+  }
+
   private transformNhomLoaiCongViecTheoChiTietLoaiRes(nhomLoaiCongViec: {
     id: number;
     ten_nhom: string;
