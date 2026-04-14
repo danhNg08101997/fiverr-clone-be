@@ -6,21 +6,25 @@ import {
 import { PrismaService } from '../../../prisma/prisma.service';
 import { successResponse } from '../../common/utils/response.util';
 import { UpdateNguoiDungDto } from './dtos/update-nguoi-dung.dto';
-import * as bcrypt from 'bcryptjs';
-import { ConfigService } from '@nestjs/config';
+import { Prisma } from '@prisma/client';
+import { JsonValue } from '@prisma/client/runtime/client';
 
 @Injectable()
 export class NguoiDungService {
-  private readonly saltRounds: number;
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) {
-    this.saltRounds = Number(
-      this.configService.get<number>('BCRYPT_SALT_ROUNDS', 10),
-    );
-  }
+  private readonly nguoiDungPublicSelect = {
+    id: true,
+    name: true,
+    email: true,
+    phone: true,
+    birthday: true,
+    avatar: true,
+    gender: true,
+    role: true,
+    skill: true,
+    certification: true,
+  };
 
   async findAll() {
     const nguoiDungAll = await this.prisma.nguoiDung.findMany();
@@ -31,33 +35,100 @@ export class NguoiDungService {
     );
   }
 
-  async update(id: string, req: UpdateNguoiDungDto) {
-    const isExist = await this.prisma.nguoiDung.findUnique({
-      where: { id: Number(id) },
+  async update(id: number, req: UpdateNguoiDungDto) {
+    const updateData: Prisma.NguoiDungUpdateInput = {};
+    if (req.name !== undefined) {
+      updateData.name = req.name.trim();
+    }
+    if (req.email !== undefined) {
+      updateData.email = req.email.trim();
+    }
+    if (req.role !== undefined) {
+      updateData.role = req.role.trim();
+    }
+    if (Object.keys(updateData).length === 0) {
+      throw new BadRequestException('Không có dữ liệu hợp lệ để cập nhật');
+    }
+
+    try {
+      const updated = await this.prisma.nguoiDung.update({
+        where: { id },
+        data: updateData,
+      });
+
+      return successResponse(updated, 'Cập nhật người dùng thành công');
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Không tìm thấy người dùng với id = ${id}`);
+      }
+      return error;
+    }
+  }
+
+  async delete(id: number) {
+    try {
+      const deletedNguoiDung = await this.prisma.nguoiDung.delete({
+        where: { id },
+      });
+      return successResponse(deletedNguoiDung, 'Xóa người dùng thành công');
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Không tìm thấy người dùng với id = ${id}`);
+      }
+
+      throw error;
+    }
+  }
+
+  async findOne(id: number) {
+    const nguoiDungTheoId = await this.prisma.nguoiDung.findUnique({
+      where: { id },
+      select: this.nguoiDungPublicSelect,
     });
 
-    if (!isExist) {
+    if (!nguoiDungTheoId) {
       throw new NotFoundException(`Không tìm thấy người dùng với id = ${id}`);
     }
 
-    const updateData: Record<string, any> = {};
+    return successResponse(
+      this.transformNguoiDungRes(nguoiDungTheoId),
+      'Tìm kiếm người dùng theo Id thành công',
+    );
+  }
 
-    return null;
+  async getNguoiDungTheoTen(tenNguoiDung: string) {
+    const nguoiDungTheoTen = await this.prisma.nguoiDung.findMany({
+      where: {
+        name: {
+          contains: tenNguoiDung,
+          mode: 'insensitive',
+        },
+      },
+      select: this.nguoiDungPublicSelect,
+    });
+
+    return successResponse(
+      nguoiDungTheoTen.map(this.transformNguoiDungRes.bind(this)),
+      'Lấy người dùng theo tên người dùng thành công',
+    );
   }
 
   private transformNguoiDungRes(nguoiDung: {
     id: number;
     name: string;
     email: string;
-    password: string;
-    phone: string;
-    birthday: string;
-    avatar: string;
-    gender: string;
+    password?: string | null;
+    phone?: string | null;
+    birthday?: string | null;
+    avatar?: string | null;
+    gender?: boolean | null;
     role: string;
-    skill: string[];
-    certification: string[];
-    booking_job: number[];
+    skill?: string[] | JsonValue;
+    certification?: string[] | JsonValue;
+    booking_job?: number[];
   }) {
     return {
       id: nguoiDung.id,
