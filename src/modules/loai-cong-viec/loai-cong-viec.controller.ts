@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { LoaiCongViecService } from './loai-cong-viec.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
-import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
+import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -45,7 +45,7 @@ export class LoaiCongViecController {
     status: 200,
     description: 'Lấy danh sách phân trang thành công',
   })
-  findAllPaginationAndSearch(@Query() query: QueryLoaiCongViecDto) {
+  findAllPaginationAndSearch(@Query() query: QueryPaginationAndSearch) {
     return this.loaiCongViecService.findAllPaginationAndSearch(query);
   }
 

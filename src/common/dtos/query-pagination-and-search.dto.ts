@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class QueryLoaiCongViecDto {
+export class QueryPaginationAndSearch {
   @ApiPropertyOptional()
   @IsOptional()
   @Type(() => Number)

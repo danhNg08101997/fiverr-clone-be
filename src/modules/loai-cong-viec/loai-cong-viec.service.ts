@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
-import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
+import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
 import {
   paginationResponse,
@@ -52,12 +52,12 @@ export class LoaiCongViecService {
     );
   }
 
-  async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
+  async findAllPaginationAndSearch(query: QueryPaginationAndSearch) {
     const pageIndex = Number(query.pageIndex) || 1;
     const pageSize = Number(query.pageSize) || 10;
     const keyword = query.keyword?.trim() || '';
 
-    if (pageIndex < 1 && pageSize < 1) {
+    if (pageIndex < 1 || pageSize < 1) {
       throw new BadRequestException(
         'pageIndex và pageSize phải lớn hơn 1',
         HttpStatus.BAD_REQUEST.toString(),

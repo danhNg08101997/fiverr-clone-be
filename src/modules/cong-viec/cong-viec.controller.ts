@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { CongViecService } from './cong-viec.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
-import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -24,6 +23,7 @@ import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
 import { RolesGuard } from '../../guard/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../common/enums/role.enum';
+import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 
 @ApiTags('Công việc')
 @Controller('cong-viec')
@@ -59,7 +59,7 @@ export class CongViecController {
     status: 200,
     description: 'Lấy danh sách phân trang thành công',
   })
-  findAllPaginationAndSearch(@Query() query: QueryLoaiCongViecDto) {
+  findAllPaginationAndSearch(@Query() query: QueryPaginationAndSearch) {
     return this.congViecService.findAllPaginationAndSearch(query);
   }
 

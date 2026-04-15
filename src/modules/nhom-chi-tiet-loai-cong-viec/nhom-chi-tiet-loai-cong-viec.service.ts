@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-loai-cong-viec.dto';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { QueryLoaiCongViecDto } from '../../common/dtos/query-loai-cong-viec.dto';
+import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 import { UpdateNhomChiTietLoaiCongViecDto } from './dtos/update-nhom-chi-tiet-loai-cong-viec.dto';
 import {
   paginationResponse,
@@ -60,7 +60,7 @@ export class NhomChiTietLoaiCongViecService {
     );
   }
 
-  async findAllPaginationAndSearch(query: QueryLoaiCongViecDto) {
+  async findAllPaginationAndSearch(query: QueryPaginationAndSearch) {
     const pageIndex = Number(query.pageIndex) || 1;
     const pageSize = Number(query.pageSize) || 10;
     const keyword = query.keyword?.trim() || '';

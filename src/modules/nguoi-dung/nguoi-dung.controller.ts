@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { NguoiDungService } from './nguoi-dung.service';
 import { RegisterDto } from '../auth/dtos/register.dto';
 import { AuthService } from '../auth/auth.service';
 import { UpdateNguoiDungDto } from './dtos/update-nguoi-dung.dto';
+import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 
 @Controller('nguoi-dung')
 @ApiTags('Người dùng')
@@ -27,6 +29,10 @@ export class NguoiDungController {
   @ApiResponse({
     status: 200,
     description: 'Lấy danh sách người dùng thành công',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Không tìm thấy danh sách người dùng',
   })
   findAll() {
     return this.nguoiDungService.findAll();
@@ -75,10 +81,6 @@ export class NguoiDungController {
     description: 'Tìm kiếm người dùng theo Id thành công',
   })
   @ApiResponse({
-    status: 200,
-    description: 'Tìm kiếm người dùng theo Id thành công',
-  })
-  @ApiResponse({
     status: 404,
     description: 'Không tìm thấy người dùng',
   })
@@ -99,5 +101,18 @@ export class NguoiDungController {
   })
   findName(@Param('TenNguoiDung') tenNguoiDung: string) {
     return this.nguoiDungService.getNguoiDungTheoTen(tenNguoiDung);
+  }
+
+  // GET /api/nguoi-dung/phan-trang-tim-kiem?pageIndex=1&pageSize=10&keyword=abc
+  @Get('phan-trang-tim-kiem')
+  @ApiQuery({ name: 'pageIndex', required: false })
+  @ApiQuery({ name: 'pageSize', required: false })
+  @ApiQuery({ name: 'keyword', required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'Lấy danh sách phân trang thành công',
+  })
+  findAllPaginationAndSearch(@Query() query: QueryPaginationAndSearch) {
+    return this.nguoiDungService.findAllPaginationAndSearch(query);
   }
 }

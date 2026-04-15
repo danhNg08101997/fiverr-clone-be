@@ -1,13 +1,18 @@
 import {
   BadRequestException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { successResponse } from '../../common/utils/response.util';
+import {
+  paginationResponse,
+  successResponse,
+} from '../../common/utils/response.util';
 import { UpdateNguoiDungDto } from './dtos/update-nguoi-dung.dto';
 import { Prisma } from '@prisma/client';
 import { JsonValue } from '@prisma/client/runtime/client';
+import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 
 @Injectable()
 export class NguoiDungService {
@@ -100,10 +105,16 @@ export class NguoiDungService {
   }
 
   async getNguoiDungTheoTen(tenNguoiDung: string) {
+    const keyword = tenNguoiDung.trim();
+
+    if (!keyword) {
+      return successResponse([], 'Từ khóa tìm kiếm rỗng');
+    }
+
     const nguoiDungTheoTen = await this.prisma.nguoiDung.findMany({
       where: {
         name: {
-          contains: tenNguoiDung,
+          contains: keyword,
           mode: 'insensitive',
         },
       },
@@ -113,6 +124,65 @@ export class NguoiDungService {
     return successResponse(
       nguoiDungTheoTen.map(this.transformNguoiDungRes.bind(this)),
       'Lấy người dùng theo tên người dùng thành công',
+    );
+  }
+
+  async findAllPaginationAndSearch(query: QueryPaginationAndSearch) {
+    const pageIndex = Number(query.pageIndex) || 1;
+    const pageSize = Number(query.pageSize) || 10;
+    const keyword = query.keyword?.trim() || '';
+
+    if (pageIndex < 1 || pageSize < 1) {
+      throw new BadRequestException(
+        'pageIndex và pageSize phải lớn hơn 1',
+        HttpStatus.BAD_REQUEST.toString(),
+      );
+    }
+
+    const whereCondition: Prisma.NguoiDungWhereInput = keyword
+      ? {
+          OR: [
+            {
+              name: {
+                contains: keyword,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+            {
+              email: {
+                contains: keyword,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          ],
+        }
+      : {};
+
+    const [data, totalRow] = await Promise.all([
+      this.prisma.nguoiDung.findMany({
+        where: whereCondition,
+        skip: (pageIndex - 1) * pageSize,
+        take: pageSize,
+        orderBy: {
+          id: 'asc',
+        },
+      }),
+
+      this.prisma.nguoiDung.count({
+        where: whereCondition,
+      }),
+    ]);
+
+    return paginationResponse(
+      data.map(this.transformNguoiDungRes.bind(this)),
+      {
+        pageIndex,
+        pageSize,
+        totalItems: totalRow,
+        totalPages: Math.ceil(totalRow / pageSize),
+        keyword,
+      },
+      'Lấy danh sách nhóm chi tiết loại công việc phân trang, tìm kiếm thành công',
     );
   }
 
