@@ -128,33 +128,23 @@ export class NguoiDungService {
   }
 
   async findAllPaginationAndSearch(query: QueryPaginationAndSearch) {
-    const pageIndex = Number(query.pageIndex) || 1;
-    const pageSize = Number(query.pageSize) || 10;
+    const pageIndex = query.pageIndex || 1;
+    const pageSize = query.pageSize || 10;
     const keyword = query.keyword?.trim() || '';
 
     if (pageIndex < 1 || pageSize < 1) {
       throw new BadRequestException(
-        'pageIndex và pageSize phải lớn hơn 1',
+        'pageIndex và pageSize không nhỏ hơn 1',
         HttpStatus.BAD_REQUEST.toString(),
       );
     }
 
     const whereCondition: Prisma.NguoiDungWhereInput = keyword
       ? {
-          OR: [
-            {
-              name: {
-                contains: keyword,
-                mode: Prisma.QueryMode.insensitive,
-              },
-            },
-            {
-              email: {
-                contains: keyword,
-                mode: Prisma.QueryMode.insensitive,
-              },
-            },
-          ],
+          name: {
+            contains: keyword,
+            mode: Prisma.QueryMode.insensitive,
+          },
         }
       : {};
 

@@ -12,6 +12,7 @@ import {
   paginationResponse,
   successResponse,
 } from '../../common/utils/response.util';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class NhomChiTietLoaiCongViecService {
@@ -61,20 +62,20 @@ export class NhomChiTietLoaiCongViecService {
   }
 
   async findAllPaginationAndSearch(query: QueryPaginationAndSearch) {
-    const pageIndex = Number(query.pageIndex) || 1;
-    const pageSize = Number(query.pageSize) || 10;
+    const pageIndex = query.pageIndex || 1;
+    const pageSize = query.pageSize || 10;
     const keyword = query.keyword?.trim() || '';
 
     if (pageIndex < 1 && pageSize < 1) {
       throw new BadRequestException(
-        'pageIndex và pageSize phải lớn hơn 1',
+        'pageIndex và pageSize không nhỏ hơn 1',
         HttpStatus.BAD_REQUEST.toString(),
       );
     }
 
-    const whereCondition = keyword
+    const whereCondition: Prisma.NhomChiTietLoaiCongViecWhereInput = keyword
       ? {
-          ten_nhom: { contains: keyword },
+          ten_nhom: { contains: keyword, mode: Prisma.QueryMode.insensitive },
         }
       : {};
 
