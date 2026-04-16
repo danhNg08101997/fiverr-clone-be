@@ -7,12 +7,23 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { LoaiCongViecService } from './loai-cong-viec.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
 import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
+import { RolesGuard } from '../../guard/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../../common/enums/role.enum';
 
 @ApiTags('Loại công việc')
 @Controller('loai-cong-viec')
@@ -21,6 +32,9 @@ export class LoaiCongViecController {
 
   // POST /api/loai-cong-viec
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: 'Tạo loại công việc thành công' })
   create(@Body() dto: CreateLoaiCongViecDto) {
     return this.loaiCongViecService.create(dto);
@@ -38,6 +52,9 @@ export class LoaiCongViecController {
 
   // GET /api/loai-cong-viec/phan-trang-tim-kiem?pageIndex=1&pageSize=10&keyword=abc
   @Get('phan-trang-tim-kiem')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiQuery({ name: 'pageIndex', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
   @ApiQuery({ name: 'keyword', required: false })
@@ -66,6 +83,9 @@ export class LoaiCongViecController {
 
   // PUT api/loai-cong-viec/{id}
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
     status: 200,
@@ -80,6 +100,9 @@ export class LoaiCongViecController {
 
   // DELETE api/loai-cong-viec/{id}
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
     status: 200,

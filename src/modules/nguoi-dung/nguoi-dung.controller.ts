@@ -8,13 +8,24 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { NguoiDungService } from './nguoi-dung.service';
 import { RegisterDto } from '../auth/dtos/register.dto';
 import { AuthService } from '../auth/auth.service';
 import { UpdateNguoiDungDto } from './dtos/update-nguoi-dung.dto';
 import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
+import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
+import { RolesGuard } from '../../guard/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../../common/enums/role.enum';
 
 @Controller('nguoi-dung')
 @ApiTags('Người dùng')
@@ -26,6 +37,9 @@ export class NguoiDungController {
 
   // GET api/nguoi-dung
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Lấy danh sách người dùng thành công',
@@ -40,6 +54,9 @@ export class NguoiDungController {
 
   // GET /api/nguoi-dung/phan-trang-tim-kiem?pageIndex=1&pageSize=10&keyword=abc
   @Get('phan-trang-tim-kiem')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiQuery({ name: 'pageIndex', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
   @ApiQuery({ name: 'keyword', required: false })
@@ -53,6 +70,9 @@ export class NguoiDungController {
 
   // POST api/nguoi-dung
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiResponse({
     status: 201,
     description: 'Tạo người dùng thành công',
@@ -63,6 +83,9 @@ export class NguoiDungController {
 
   // PUT api/nguoi-dung/{id}
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
     status: 200,
@@ -77,6 +100,9 @@ export class NguoiDungController {
 
   // DELETE api/nguoi-dung/{id}
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
     status: 200,
@@ -103,6 +129,9 @@ export class NguoiDungController {
 
   // GET api/nguoi-dung/{tenNguoiDung}
   @Get('tiem-kiem/:TenNguoiDung')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN_ENUM)
+  @ApiBearerAuth()
   @ApiParam({ name: 'TenNguoiDung', type: String })
   @ApiResponse({
     status: 200,

@@ -17,6 +17,34 @@ import { UpdateCongViecDto } from './dtos/update-cong-viec.dto';
 export class CongViecService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly congViecPublicSelect = {
+    NguoiDung: {
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+      },
+    },
+    ChiTietLoaiCongViec: {
+      select: {
+        id: true,
+        ten_chi_tiet: true,
+        NhomChiTietLoaiCongViec: {
+          select: {
+            id: true,
+            ten_nhom: true,
+            LoaiCongViec: {
+              select: {
+                id: true,
+                ten_loai_cong_viec: true,
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
   async create(dto: CreateCongViecDto) {
     const chiTietLoai = await this.prisma.chiTietLoaiCongViec.findUnique({
       where: {
@@ -282,33 +310,7 @@ export class CongViecService {
   async getCongVietTheoTen(tenCongViec: string) {
     const congViecTheoTen = await this.prisma.congViec.findMany({
       where: { ten_cong_viec: { contains: tenCongViec } },
-      include: {
-        NguoiDung: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-          },
-        },
-        ChiTietLoaiCongViec: {
-          select: {
-            id: true,
-            ten_chi_tiet: true,
-            NhomChiTietLoaiCongViec: {
-              select: {
-                id: true,
-                ten_nhom: true,
-                LoaiCongViec: {
-                  select: {
-                    id: true,
-                    ten_loai_cong_viec: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      include: this.congViecPublicSelect,
     });
     return successResponse(
       congViecTheoTen.map(this.transformCongViecResV3.bind(this)),
@@ -319,33 +321,7 @@ export class CongViecService {
   async getCongViecTheoMaCongViec(maCongViec: string) {
     const congViecTheoMaCongViec = await this.prisma.congViec.findMany({
       where: { id: Number(maCongViec) },
-      include: {
-        NguoiDung: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-          },
-        },
-        ChiTietLoaiCongViec: {
-          select: {
-            id: true,
-            ten_chi_tiet: true,
-            NhomChiTietLoaiCongViec: {
-              select: {
-                id: true,
-                ten_nhom: true,
-                LoaiCongViec: {
-                  select: {
-                    id: true,
-                    ten_loai_cong_viec: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      include: this.congViecPublicSelect,
     });
 
     return successResponse(
@@ -357,33 +333,7 @@ export class CongViecService {
   async getCongViecTheoTenCongViec(tenCongViec: string) {
     const congViecTheoTen = await this.prisma.congViec.findMany({
       where: { ten_cong_viec: { contains: tenCongViec } },
-      include: {
-        NguoiDung: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-          },
-        },
-        ChiTietLoaiCongViec: {
-          select: {
-            id: true,
-            ten_chi_tiet: true,
-            NhomChiTietLoaiCongViec: {
-              select: {
-                id: true,
-                ten_nhom: true,
-                LoaiCongViec: {
-                  select: {
-                    id: true,
-                    ten_loai_cong_viec: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      include: this.congViecPublicSelect,
     });
 
     return successResponse(

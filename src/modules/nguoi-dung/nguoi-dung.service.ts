@@ -42,15 +42,32 @@ export class NguoiDungService {
 
   async update(id: number, req: UpdateNguoiDungDto) {
     const updateData: Prisma.NguoiDungUpdateInput = {};
+
     if (req.name !== undefined) {
       updateData.name = req.name.trim();
     }
     if (req.email !== undefined) {
       updateData.email = req.email.trim();
     }
+    if (req.phone !== undefined) {
+      updateData.phone = req.phone.trim();
+    }
+    if (req.birthday !== undefined) {
+      updateData.birthday = req.birthday;
+    }
+    if (req.gender !== undefined) {
+      updateData.gender = req.gender;
+    }
     if (req.role !== undefined) {
       updateData.role = req.role.trim();
     }
+    if (req.skill !== undefined) {
+      updateData.skill = req.skill;
+    }
+    if (req.certification !== undefined) {
+      updateData.certification = req.certification;
+    }
+
     if (Object.keys(updateData).length === 0) {
       throw new BadRequestException('Không có dữ liệu hợp lệ để cập nhật');
     }
@@ -63,10 +80,7 @@ export class NguoiDungService {
 
       return successResponse(updated, 'Cập nhật người dùng thành công');
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new NotFoundException(`Không tìm thấy người dùng với id = ${id}`);
       }
       return error;
