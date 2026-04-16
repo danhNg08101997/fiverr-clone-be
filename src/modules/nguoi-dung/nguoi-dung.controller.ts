@@ -38,6 +38,19 @@ export class NguoiDungController {
     return this.nguoiDungService.findAll();
   }
 
+  // GET /api/nguoi-dung/phan-trang-tim-kiem?pageIndex=1&pageSize=10&keyword=abc
+  @Get('phan-trang-tim-kiem')
+  @ApiQuery({ name: 'pageIndex', required: false })
+  @ApiQuery({ name: 'pageSize', required: false })
+  @ApiQuery({ name: 'keyword', required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'Lấy danh sách phân trang thành công',
+  })
+  findAllPaginationAndSearch(@Query() query: QueryPaginationAndSearch) {
+    return this.nguoiDungService.findAllPaginationAndSearch(query);
+  }
+
   // POST api/nguoi-dung
   @Post()
   @ApiResponse({
@@ -101,18 +114,5 @@ export class NguoiDungController {
   })
   findName(@Param('TenNguoiDung') tenNguoiDung: string) {
     return this.nguoiDungService.getNguoiDungTheoTen(tenNguoiDung);
-  }
-
-  // GET /api/nguoi-dung/phan-trang-tim-kiem?pageIndex=1&pageSize=10&keyword=abc
-  @Get('phan-trang-tim-kiem')
-  @ApiQuery({ name: 'pageIndex', required: false })
-  @ApiQuery({ name: 'pageSize', required: false })
-  @ApiQuery({ name: 'keyword', required: false })
-  @ApiResponse({
-    status: 200,
-    description: 'Lấy danh sách phân trang thành công',
-  })
-  findAllPaginationAndSearch(@Query() query: QueryPaginationAndSearch) {
-    return this.nguoiDungService.findAllPaginationAndSearch(query);
   }
 }
