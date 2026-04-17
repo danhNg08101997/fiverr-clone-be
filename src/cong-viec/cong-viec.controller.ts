@@ -19,11 +19,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UpdateCongViecDto } from './dtos/update-cong-viec.dto';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { RolesGuard } from '../../guard/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../../common/enums/role.enum';
-import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { RolesGuard } from '../guard/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/role.enum';
+import { QueryPaginationAndSearch } from '../common/dtos/query-pagination-and-search.dto';
 
 @ApiTags('Công việc')
 @Controller('cong-viec')

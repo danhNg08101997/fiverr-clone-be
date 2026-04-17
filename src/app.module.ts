@@ -1,14 +1,15 @@
 import { Logger, Module } from '@nestjs/common';
 import { PinoLogger } from './utils/logger/pino.logger';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { CongViecModule } from './modules/cong-viec/cong-viec.module';
-import { LoaiCongViecModule } from './modules/loai-cong-viec/loai-cong-viec.module';
-import { NhomChiTietLoaiCongViecModule } from './modules/nhom-chi-tiet-loai-cong-viec/nhom-chi-tiet-loai-cong-viec.module';
-import { ChiTietLoaiCongViecModule } from './modules/chi-tiet-loai-cong-viec/chi-tiet-loai-cong-viec.module';
+import { CongViecModule } from './cong-viec/cong-viec.module';
+import { LoaiCongViecModule } from './loai-cong-viec/loai-cong-viec.module';
+import { NhomChiTietLoaiCongViecModule } from './nhom-chi-tiet-loai-cong-viec/nhom-chi-tiet-loai-cong-viec.module';
+import { ChiTietLoaiCongViecModule } from './chi-tiet-loai-cong-viec/chi-tiet-loai-cong-viec.module';
 import { ConfigModule } from '@nestjs/config';
-import { BinhLuanModule } from './modules/binh-luan/binh-luan.module';
-import { NguoiDungModule } from './modules/nguoi-dung/nguoi-dung.module';
+import { BinhLuanModule } from './binh-luan/binh-luan.module';
+import { NguoiDungModule } from './nguoi-dung/nguoi-dung.module';
+import { ThueCongViecModule } from './thue-cong-viec/thue-cong-viec.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { NguoiDungModule } from './modules/nguoi-dung/nguoi-dung.module';
     ChiTietLoaiCongViecModule,
     CongViecModule,
     NguoiDungModule,
+    ThueCongViecModule,
   ],
   controllers: [],
   providers: [

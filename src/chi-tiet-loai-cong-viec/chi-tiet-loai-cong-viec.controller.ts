@@ -3,10 +3,10 @@ import { ChiTietLoaiCongViecService } from './chi-tiet-loai-cong-viec.service';
 import { CreateChiTietLoaiCongViecDto } from './dtos/create-chi-tiet-loai-cong-viec.dto';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateChiTietLoaiCongViecDto } from './dtos/update-chi-tiet-loai-cong-viec.dto';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { RolesGuard } from '../../guard/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../../common/enums/role.enum';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { RolesGuard } from '../guard/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/role.enum';
 
 @ApiTags('Chi tiết loại công việc')
 @Controller('chi-tiet-loai-cong-viec')

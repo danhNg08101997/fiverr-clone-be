@@ -1,7 +1,7 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateChiTietLoaiCongViecDto } from './dtos/create-chi-tiet-loai-cong-viec.dto';
-import { successResponse } from '../../common/utils/response.util';
+import { successResponse } from '../common/utils/response.util';
 import { UpdateChiTietLoaiCongViecDto } from './dtos/update-chi-tiet-loai-cong-viec.dto';
 
 @Injectable()

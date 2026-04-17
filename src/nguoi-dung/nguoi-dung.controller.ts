@@ -21,11 +21,11 @@ import { NguoiDungService } from './nguoi-dung.service';
 import { RegisterDto } from '../auth/dtos/register.dto';
 import { AuthService } from '../auth/auth.service';
 import { UpdateNguoiDungDto } from './dtos/update-nguoi-dung.dto';
-import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { RolesGuard } from '../../guard/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../../common/enums/role.enum';
+import { QueryPaginationAndSearch } from '../common/dtos/query-pagination-and-search.dto';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { RolesGuard } from '../guard/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/role.enum';
 
 @Controller('nguoi-dung')
 @ApiTags('Người dùng')

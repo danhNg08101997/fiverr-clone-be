@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { successResponse } from '../../common/utils/response.util';
+import { PrismaService } from '../../prisma/prisma.service';
+import { successResponse } from '../common/utils/response.util';
 import { CreateBinhLuanDto } from './dtos/create-binh-luan.dto';
 import { UpdateBinhLuanDto } from './dtos/update-binh-luan.dto';
 

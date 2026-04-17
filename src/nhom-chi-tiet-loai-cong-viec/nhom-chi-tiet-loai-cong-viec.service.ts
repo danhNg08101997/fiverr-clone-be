@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateNhomChiTietLoaiCongViecDto } from './dtos/create-nhom-chi-tiet-loai-cong-viec.dto';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { QueryPaginationAndSearch } from '../common/dtos/query-pagination-and-search.dto';
 import { UpdateNhomChiTietLoaiCongViecDto } from './dtos/update-nhom-chi-tiet-loai-cong-viec.dto';
 import {
   paginationResponse,
   successResponse,
-} from '../../common/utils/response.util';
+} from '../common/utils/response.util';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

@@ -12,10 +12,10 @@ import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BinhLuanService } from './binh-luan.service';
 import { CreateBinhLuanDto } from './dtos/create-binh-luan.dto';
 import { UpdateBinhLuanDto } from './dtos/update-binh-luan.dto';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { RolesGuard } from '../../guard/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../../common/enums/role.enum';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { RolesGuard } from '../guard/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/role.enum';
 
 @ApiTags('Bình luận')
 @Controller('binh-luan')

@@ -4,13 +4,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { RegisterDto } from './dtos/register.dto';
 import { ConfigService } from '@nestjs/config';
-import { UserRole } from '../../common/enums/role.enum';
-import { successResponse } from '../../common/utils/response.util';
-import { AuthUserPayload } from '../../common/types/authUser.type';
+import { UserRole } from '../common/enums/role.enum';
+import { successResponse } from '../common/utils/response.util';
+import { AuthUserPayload } from '../common/types/authUser.type';
 
 @Injectable()
 export class AuthService {

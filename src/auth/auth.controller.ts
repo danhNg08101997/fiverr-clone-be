@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from '../../guard/local-auth.guard';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { LocalAuthGuard } from '../guard/local-auth.guard';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { RegisterDto } from './dtos/register.dto';
 import { LoginDto } from './dtos/login.dto';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';

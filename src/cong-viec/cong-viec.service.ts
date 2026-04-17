@@ -4,13 +4,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { CreateCongViecDto } from './dtos/create-cong-viec.dto';
-import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
+import { QueryPaginationAndSearch } from '../common/dtos/query-pagination-and-search.dto';
 import {
   paginationResponse,
   successResponse,
-} from '../../common/utils/response.util';
+} from '../common/utils/response.util';
 import { UpdateCongViecDto } from './dtos/update-cong-viec.dto';
 
 @Injectable()

@@ -4,15 +4,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import {
   paginationResponse,
   successResponse,
-} from '../../common/utils/response.util';
+} from '../common/utils/response.util';
 import { UpdateNguoiDungDto } from './dtos/update-nguoi-dung.dto';
 import { Prisma } from '@prisma/client';
 import { JsonValue } from '@prisma/client/runtime/client';
-import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
+import { QueryPaginationAndSearch } from '../common/dtos/query-pagination-and-search.dto';
 
 @Injectable()
 export class NguoiDungService {

@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.strategy'; // Passport Local Strategy
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { PrismaModule } from '../../../prisma/prisma.module';
+import { PrismaModule } from '../../prisma/prisma.module';
 import { ConfigService } from '@nestjs/config'; // JWT Strategy
 
 @Module({

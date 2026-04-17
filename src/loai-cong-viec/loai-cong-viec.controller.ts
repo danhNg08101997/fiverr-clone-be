@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { LoaiCongViecService } from './loai-cong-viec.service';
 import { CreateLoaiCongViecDto } from './dtos/create-loai-cong-viec.dto';
-import { QueryPaginationAndSearch } from '../../common/dtos/query-pagination-and-search.dto';
+import { QueryPaginationAndSearch } from '../common/dtos/query-pagination-and-search.dto';
 import { UpdateLoaiCongViecDto } from './dtos/update-loai-cong-viec.dto';
 import {
   ApiBearerAuth,
@@ -20,10 +20,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../guard/jwt-auth.guard';
-import { RolesGuard } from '../../guard/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../../common/enums/role.enum';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { RolesGuard } from '../guard/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from '../common/enums/role.enum';
 
 @ApiTags('Loại công việc')
 @Controller('loai-cong-viec')

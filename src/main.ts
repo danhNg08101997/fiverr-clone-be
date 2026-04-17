@@ -43,7 +43,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Fiverr Clone API')
     .setDescription('Backend API for Fiverr clone project')
-    .setVersion('1.0.0')
+    .setVersion('1.0')
     .addBearerAuth()
     .build();
 
