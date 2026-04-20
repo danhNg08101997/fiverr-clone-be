@@ -19,32 +19,56 @@ export class NhomChiTietLoaiCongViecService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateNhomChiTietLoaiCongViecDto) {
-    const isDuplicate = await this.prisma.nhomChiTietLoaiCongViec.findFirst({
-      where: {
-        ten_nhom: dto.tenNhom,
-      },
+    const tenNhom = dto.tenNhom?.trim();
+    const hinhAnh = dto.hinhAnh?.trim() ?? '';
+
+    if (!tenNhom) {
+      throw new BadRequestException('tenNhom không được để trống');
+    }
+
+    const loaiCongViec = await this.prisma.loaiCongViec.findUnique({
+      where: { id: dto.maLoaiCongViec },
     });
 
-    if (isDuplicate) {
-      throw new BadRequestException(
-        `tenNhom = ${dto.tenNhom} bị trùng`,
-        HttpStatus.BAD_REQUEST.toString(),
+    if (!loaiCongViec) {
+      throw new NotFoundException(
+        `Không tìm thấy loại công việc với id = ${dto.maLoaiCongViec}`,
       );
     }
 
-    const newNhomChiTietLoaiCongViec =
-      await this.prisma.nhomChiTietLoaiCongViec.create({
-        data: {
-          ten_nhom: dto.tenNhom ?? '',
-          hinh_anh: dto.hinhAnh ?? '',
-          ma_loai_cong_viec: dto.maLoaiCongViec,
-        },
-      });
+    try {
+      const newNhomChiTietLoaiCongViec =
+        await this.prisma.nhomChiTietLoaiCongViec.create({
+          data: {
+            ten_nhom: tenNhom,
+            hinh_anh: hinhAnh,
+            ma_loai_cong_viec: dto.maLoaiCongViec,
+          },
+        });
 
-    return successResponse(
-      newNhomChiTietLoaiCongViec,
-      'Tạo nhóm chi tiết loại công việc thành công',
-    );
+      return successResponse(
+        newNhomChiTietLoaiCongViec,
+        'Tạo nhóm chi tiết loại công việc thành công',
+      );
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException(`Tên nhóm "${tenNhom}" đã tồn tại`);
+      }
+
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2003'
+      ) {
+        throw new BadRequestException(
+          `maLoaiCongViec = ${dto.maLoaiCongViec} không hợp lệ`,
+        );
+      }
+
+      throw error;
+    }
   }
 
   async findAll() {
